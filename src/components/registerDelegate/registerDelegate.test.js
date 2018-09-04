@@ -24,7 +24,7 @@ const delegateAccount = {
   address: '16313739661670634666L',
   balance: 1000e8,
   delegate: {
-    username: 'lisk-nano',
+    username: 'liskish-wallet',
   },
 };
 
@@ -33,7 +33,7 @@ const withSecondSecretAccount = {
   address: '16313739661670634666L',
   balance: 1000e8,
   delegate: {
-    username: 'lisk-nano',
+    username: 'liskish-wallet',
   },
   secondPublicKey: 'fab9d261ea050b9e326d7e11587eccc343a20e64e29d8781b50fd06683cacc88',
 };

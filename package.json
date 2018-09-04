@@ -1,9 +1,9 @@
 {
-  "name": "lisk-nano",
+  "name": "liskish-wallet",
   "version": "2.0.0-Ledger-rc.1",
-  "description": "Lisk Nano",
-  "homepage": "https://github.com/LiskHQ/lisk-nano",
-  "bugs": "https://github.com/LiskHQ/lisk-nano/issues",
+  "description": "Liskish Wallet",
+  "homepage": "https://github.com/hirishh/liskish-wallet",
+  "bugs": "https://github.com/hirishh/liskish-wallet/issues",
   "main": "main.js",
   "scripts": {
     "build": "npm run clean-build && npm run copy-files && npm run build-prod && npm run build-electron",
@@ -29,11 +29,11 @@
     "build-storybook": "build-storybook",
     "serve": "http-server"
   },
-  "author": "Lisk Foundation <admin@lisk.io>, lightcurve GmbH <admin@lightcurve.io>",
+  "author": "Matteo Ferrari (hirish) <matteo.ferrari@sapiensproject.io>, Lisk Foundation <admin@lisk.io>, lightcurve GmbH <admin@lightcurve.io>",
   "license": "GPL-3.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/LiskHQ/lisk-nano"
+    "url": "https://github.com/hirishh/liskish-wallet"
   },
   "dependencies": {
     "@ledgerhq/hw-transport-node-hid": "^4.18.0",
@@ -159,15 +159,15 @@
     "webpack-dev-server": "2.8.2"
   },
   "build": {
-    "appId": "io.lisk.nano",
-    "productName": "Lisk Nano",
+    "appId": "io.liskish.wallet",
+    "productName": "Liskish Wallet",
     "protocols": {
-      "name": "lisk-nano",
+      "name": "liskish-wallet",
       "schemes": [
         "lisk"
       ]
     },
-    "artifactName": "lisk-nano-${os}-${arch}-${version}.${ext}",
+    "artifactName": "liskish-wallet-${os}-${arch}-${version}.${ext}",
     "publish": [
       "github"
     ],

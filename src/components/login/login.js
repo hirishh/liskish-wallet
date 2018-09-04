@@ -242,7 +242,7 @@ class Login extends React.Component {
                 </div>
 
                 <div className={grid['col-xs-12']}>
-                  <Button label={this.props.t('Login with Ledger Nano')} primary raised
+                  <Button label={this.props.t('Login with Ledger Nano S')} primary raised
                     className='login-button'
                     onClick={this.ledgerLogin.bind(this)}
                     type='button'

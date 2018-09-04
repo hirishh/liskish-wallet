@@ -1,21 +1,18 @@
-# Lisk Nano
+# Liskish Wallet
+##### (Lisk Nano fork)
 
-[![Build Status](https://jenkins.lisk.io/buildStatus/icon?job=lisk-nano/development)](https://jenkins.lisk.io/job/lisk-nano/job/development)
-[![Coverage Status](https://coveralls.io/repos/github/LiskHQ/lisk-nano/badge.svg?branch=development)](https://coveralls.io/github/LiskHQ/lisk-nano?branch=development)
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
-[![Join the chat at https://gitter.im/LiskHQ/lisk](https://badges.gitter.im/LiskHQ/lisk.svg)](https://gitter.im/LiskHQ/lisk?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-[![devDependencies Status](https://david-dm.org/liskHQ/lisk-nano/dev-status.svg)](https://david-dm.org/liskHQ/lisk-nano?type=dev)
 
 ## Development
 
 ```
-git clone https://github.com/LiskHQ/lisk-nano.git
-cd lisk-nano
+git clone https://github.com/hirishh/liskish-wallet.git
+cd liskish-wallet
 npm install
 npm run dev
 ```
 
-Open http://localhost:8080
+Open https://localhost:8080
 
 For ease of development, you can setItem in localStorage to prefill a passphrase, e.g.:
 ```
@@ -108,7 +105,7 @@ And run it with [pm2](http://pm2.keymetrics.io/).
 
 ### Run
 
-Start the development version of lisk-nano:
+Start the development version of liskish-wallet:
 
 ```
 npm run dev
@@ -135,6 +132,7 @@ http://localhost:6006/
 
 ## Authors
 
+- Matteo Ferrari (hirish) <matteo.ferrari@sapiensproject.io>
 - Ricardo Ferro <ricardo.ferro@gmail.com>
 - Oliver Beddows <oliver@lightcurve.io>
 - Vít Stanislav <vit@lightcurve.io>
@@ -144,13 +142,14 @@ http://localhost:6006/
 
 ## License
 
+Copyright © 2018 Matteo Ferrari
 Copyright © 2016-2017 Lisk Foundation
 
 This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
-You should have received a copy of the [GNU General Public License](https://github.com/LiskHQ/lisk-nano/tree/master/LICENSE) along with this program.  If not, see <http://www.gnu.org/licenses/>.
+You should have received a copy of the [GNU General Public License](https://github.com/hirishh/liskish-wallet/tree/master/LICENSE) along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ***
 
