@@ -15,7 +15,7 @@ const getStatusTooltip = (props) => {
       }
       return props.t('Passphrase of the account will be required to perform any transaction.');
     case loginTypes.ledgerNano:
-      return props.t('Your Ledger Nano will be required to perform any transaction.');
+      return props.t('Your Ledger Nano S will be required to perform any transaction.');
     case loginTypes.trezor:
       return props.t('Your Trezor will be required to perform any transaction.');
     default:
@@ -61,7 +61,7 @@ const Address = (props) => {
             {content}
             <span className="status">
               <TooltipWrapper tooltip={getStatusTooltip(props)}>
-                <i className="material-icons">{getClassTooltip(props)}</i>
+                <i style={{ color: 'white' }} className="material-icons">{getClassTooltip(props)}</i>
               </TooltipWrapper>
             </span>
           </div>

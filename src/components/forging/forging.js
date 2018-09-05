@@ -1,5 +1,6 @@
 import React from 'react';
 import { Card } from 'react-toolbox/lib/card';
+import cardTheme from 'react-toolbox/lib/card/theme.css';
 import Waypoint from 'react-waypoint';
 import ForgingTitle from './forgingTitle';
 import DelegateStats from './delegateStats';
@@ -29,7 +30,7 @@ const Forging = ({
 
 
   return (
-    <Card style={{ padding: 8 }}>
+    <Card style={{ padding: 8 }} theme={cardTheme}>
       {account && account.isDelegate ?
         <div>
           <ForgingTitle account={account} statistics={statistics}

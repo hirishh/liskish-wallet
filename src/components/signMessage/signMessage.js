@@ -100,7 +100,8 @@ class SignMessageComponent extends React.Component {
         </InfoParagraph>
         <form onSubmit={this.executeSign.bind(this)} id='signMessageForm'>
           <section>
-            <Input className='message' multiline label={this.props.t('Message')}
+            <Input style={{ color: 'white' }}
+              className='message' multiline label={this.props.t('Message')}
               autoFocus={true}
               value={this.state.message.value}
               onChange={this.handleChange.bind(this, 'message')} />

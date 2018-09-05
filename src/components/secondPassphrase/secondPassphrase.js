@@ -19,9 +19,9 @@ const SecondPassphrase = ({
 
   const feeNote = <div>
     {t('Registering a second passphrase requires ')}
-    <b style={{ color: 'black' }}>
+    <strong>
       {t(' a fee of {{fee}} LSK.', { fee: fromRawLsk(Fees.setSecondPassphrase) })}
-    </b>
+    </strong>
     <br /><br />
   </div>;
 

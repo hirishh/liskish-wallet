@@ -53,10 +53,11 @@ const SavedAccounts = ({
             </TableHead>
             {savedAccounts.map(account => (
               <TableRow key={account.publicKey + account.network}
-                className={(isActive(account) ? styles.isActive : null)}>
+                className={`${styles.row} ${(isActive(account) ? styles.isActive : null)}`}>
                 <TableCell className={styles.iconCell} >
                   <IconButton icon='exit_to_app'
                     disabled={isActive(account)}
+                    inverse={true}
                     className='switch-button'
                     onClick={accountSwitched.bind(this, account)} />
                 </TableCell>
@@ -78,7 +79,7 @@ const SavedAccounts = ({
                   {account.loginType}
                 </TableCell>
                 <TableCell className={styles.iconCell} >
-                  <IconButton icon='clear' className='forget-button'
+                  <IconButton icon='clear' className='forget-button' inverse={true}
                     onClick={accountRemoved.bind(this, account)} />
                 </TableCell>
               </TableRow>

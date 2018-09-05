@@ -20,12 +20,12 @@
   width: 100%;
   height: 70px;
   text-align: center;
-  background: #eee;
+  background-color: #4c586f;
   overflow: hidden;
 
   & :global .inner {
     font-size: 100%;
-    color: #5f696e;
+    color: #fff;
     display: inline-block;
     width: 100%;
     margin: 0;
@@ -59,7 +59,7 @@
     }
 
     &.hasTip:hover {
-      color: #000;
+      color: #fff;
     }
 
     &.hasTip:hover + .tooltip {
@@ -82,6 +82,7 @@
   margin-top: 20px;
   margin-bottom: 16px;
   text-align: center;
+  color: #fff;
 }
 
 @media only screen and (min-width: 48em) {

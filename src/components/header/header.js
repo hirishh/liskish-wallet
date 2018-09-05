@@ -18,6 +18,7 @@ const Header = props => (
       <IconMenu
         className={`${styles.iconButton} main-menu-icon-button ${offlineStyle.disableWhenOffline}`}
         icon="more_vert"
+        inverse={true}
         position="topRight"
         menuRipple
         theme={styles}

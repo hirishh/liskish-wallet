@@ -74,7 +74,7 @@ class VerifyMessage extends React.Component {
             value={this.state.publicKey.value}
             error={this.state.publicKey.error}
             onChange={this.handleChange.bind(this, 'publicKey')} />
-          <Input className='signature' multiline label={t('Signature')}
+          <Input className='signature' type='text' label={t('Signature')}
             value={this.state.signature.value}
             error={this.state.signature.error}
             onChange={this.handleChange.bind(this, 'signature')} />

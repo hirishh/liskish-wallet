@@ -1,15 +1,15 @@
 .resultWrapper {
   h4 {
     margin-bottom: 0;
-    color: rgba(0, 0, 0, 0.87);
+    color: rgba(255, 255, 255, 0.87);
   }
 }
 
 .result textarea {
-  background: #333;
+  background-color: #fff;
   border-radius: 5px;
   overflow: hidden;
-  color: #fff;
+  color: #000;
   font-family: monospace;
   padding: 12px 24px;
   margin-bottom: -20px;

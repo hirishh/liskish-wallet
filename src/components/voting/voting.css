@@ -12,33 +12,37 @@
   position: absolute;
   top: 15px;
   right: 10px;
-  color: rgba(0, 0, 0, 0.38);
+  color: rgba(255, 255, 255, 0.38);
 }
 
 .field {
   margin-bottom: 0 !important;
+  color: #fff !important;
+  border-color: #fff !important;
 }
 
 .row {
+  color: #fff;
+
   &:hover {
-    background: #fff;
+    background-color: #555;
   }
 }
 
 .upVoteRow {
-  background-color: rgb(226, 238, 213) !important;
+  background-color: #2d7631 !important;
 }
 
 .downVoteRow {
-  background-color: rgb(255, 228, 220) !important;
+  background-color: #d95600 !important;
 }
 
 .votedRow {
-  background-color: #d6f0ff !important;
+  background-color: #698a93 !important;
 }
 
 .pendingRow {
-  background-color: #eaeae9 !important;
+  background-color: #5b7d87 !important;
 }
 
 .actionBar {
@@ -49,6 +53,7 @@
 .votesMenuButton {
   margin-right: 16px;
   margin-top: 8px;
+  color: #fff;
 
   & :global span {
     vertical-align: top;
@@ -62,7 +67,7 @@
 }
 
 .unvoted {
-  color: #c62828;
+  color: #f52929;
 }
 
 /* react toolbar overwroght */
@@ -96,7 +101,7 @@
 }
 
 .voteButton {
-  color: #000 !important;
+  color: #fff !important;
   position: relative;
   top: 3px;
 }

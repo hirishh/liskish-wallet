@@ -60,7 +60,8 @@ class DecryptMessage extends React.Component {
               autoFocus={true}
               value={this.state.senderPublicKey.value}
               onChange={this.handleChange.bind(this, 'senderPublicKey')} />
-            <Input className='message' multiline label={this.props.t('Encrypted Message')}
+            <Input style={{ color: 'white' }}
+              className='message' multiline label={this.props.t('Encrypted Message')}
               autoFocus={true}
               value={this.state.message.value}
               onChange={this.handleChange.bind(this, 'message')} />

@@ -118,7 +118,7 @@ class Send extends React.Component {
             secondPassphrase={this.state.secondPassphrase}
             onChange={this.handleChange.bind(this)} />
           <div className={styles.fee}> {this.props.t('Fee: {{fee}} LSK', { fee: this.state.fee })} </div>
-          <IconMenu icon='more_vert' position='topRight' menuRipple className={`${styles.sendAllMenu} transaction-amount`} >
+          <IconMenu icon='more_vert' position='topRight' menuRipple inverse={true} className={`${styles.sendAllMenu} transaction-amount`} >
             <MenuItem onClick={this.setMaxAmount.bind(this)}
               caption={this.props.t('Set maximum amount')}
               className='send-maximum-amount'/>

@@ -6,7 +6,8 @@
 }
 
 .grayCard {
-  background: #f7f8f9;
+  background-color: #4c586f;
+  color: #fff !important;
 }
 
 .forgedBlocksTableWrapper {

@@ -1,5 +1,6 @@
 .tab {
-  background: #f4f4f4;
+  background-color: #555;
+  color: #fff;
   box-shadow: inset 0px -1px 1px -1px rgba(0, 0, 0, 0.12);
   padding-right: 24px;
   padding-left: 24px;
@@ -26,8 +27,8 @@
 }
 
 .label.active {
-  background: white;
-  color: #0288d1;
+  background-color: #4c586f;
   margin-bottom: -1px;
+  color: #fff;
   opacity: 1;
 }

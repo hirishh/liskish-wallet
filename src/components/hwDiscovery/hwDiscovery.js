@@ -113,11 +113,12 @@ class HwDiscovery extends React.Component {
                 (account.unconfirmedBalance ||
                   (!account.unconfirmedBalance && this.state.showNextAvailable)) &&
                 <TableRow key={index}
-                  className={(this.isActive(account) ? styles.isActive : null)}>
+                  className={`${styles.row} ${(this.isActive(account) ? styles.isActive : null)}`}>
                   <TableCell className={styles.iconCell} >
                     <IconButton icon='exit_to_app'
                       disabled={this.isActive(account)}
                       className='switch-button'
+                      inverse={true}
                       onClick={this.switchAccount.bind(this, account, index)} />
                   </TableCell>
                   <TableCell>

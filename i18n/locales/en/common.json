@@ -240,7 +240,7 @@
   "You have not forged any blocks yet": "You have not forged any blocks yet",
   "You need to become a delegate to start forging. If you already registered to become a delegate, your registration hasn't been processed, yet.": "You need to become a delegate to start forging. If you already registered to become a delegate, your registration hasn't been processed, yet.",
   "You've received {{value}} LSK.": "You've received {{value}} LSK.",
-  "Your Ledger Nano will be required to perform any transaction.": "Your Ledger Nano will be required to perform any transaction.",
+  "Your Ledger Nano S will be required to perform any transaction.": "Your Ledger Nano S will be required to perform any transaction.",
   "Your Trezor will be required to perform any transaction.": "Your Trezor will be required to perform any transaction.",
   "Your transaction of {{amount}} LSK to {{recipientAddress}} was accepted and will be processed in a few seconds.": "Your transaction of {{amount}} LSK to {{recipientAddress}} was accepted and will be processed in a few seconds.",
   "Your votes were successfully submitted. It can take several seconds before they are processed.": "Your votes were successfully submitted. It can take several seconds before they are processed.",
