@@ -4,7 +4,7 @@ import React from 'react';
 import grid from 'flexboxgrid/dist/flexboxgrid.css';
 import loginTypes from '../../constants/loginTypes';
 import PrivateWrapper from '../privateWrapper';
-import logo from '../../assets/images/LISK-nano.png';
+import logo from '../../assets/images/liskish-wallet.png';
 import offlineStyle from '../offlineWrapper/offlineWrapper.css';
 import styles from './header.css';
 import RelativeLink from '../relativeLink';
