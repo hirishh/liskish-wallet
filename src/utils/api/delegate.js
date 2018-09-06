@@ -33,7 +33,6 @@ export const voteAutocomplete = (activePeer, username, votedDict) => {
   return new Promise((resolve, reject) =>
     listDelegates(activePeer, options)
       .then((response) => {
-        console.info(response);
         resolve(response.data.filter(delegate =>
           Object.keys(votedDict).filter(item =>
             (item === delegate.username) && (item.confirmed || item.unconfirmed)).length === 0,

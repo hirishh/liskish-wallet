@@ -11,7 +11,6 @@ import env from '../../constants/env';
 import networks from '../../constants/networks';
 import loginTypes from '../../constants/loginTypes';
 import getNetwork from '../../utils/getNetwork';
-import LanguageDropdown from '../languageDropdown';
 import RelativeLink from '../relativeLink';
 import { validateUrl, getLoginData } from '../../utils/login';
 import { loadingStarted, loadingFinished } from '../../utils/loading';
@@ -193,7 +192,6 @@ class Login extends React.Component {
         <div className={grid.row}>
           <div className={`${grid['col-xs-12']} ${grid['col-sm-8']} ${grid['col-sm-offset-2']}`}>
             <form onSubmit={this.onFormSubmit.bind(this)}>
-              <LanguageDropdown />
               <Dropdown
                 auto={false}
                 source={this.networks}
