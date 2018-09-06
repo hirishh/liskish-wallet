@@ -41,7 +41,7 @@ class Passphrase extends React.Component {
 
     // step 3: Confirmation, shows the generated passphrase for user to save it
     templates.show = <Input type='text' multiline autoFocus={true}
-      className='passphrase'
+      className='passphrase' style={{ color: 'white' }}
       label={this.props.t('Save your passphrase in a safe place')}
       value={this.state.passphrase} />;
 

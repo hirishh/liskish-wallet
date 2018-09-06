@@ -77,7 +77,7 @@ class EncryptMessage extends React.Component {
               value={this.state.recipientPublicKey.value}
               onChange={this.handleChange.bind(this, 'recipientPublicKey')} />
             <Input className='message' multiline label={this.props.t('Message')}
-              autoFocus={true}
+              autoFocus={true} style={{ color: 'white' }}
               value={this.state.message.value}
               onChange={this.handleChange.bind(this, 'message')} />
           </section>
