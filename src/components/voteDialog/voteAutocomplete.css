@@ -7,6 +7,7 @@
 }
 
 .searchResult {
+  background-color: #fff;
   position: absolute;
   left: 0;
   top: 52px;
