@@ -25,7 +25,7 @@ const ForgedBlocks = props => (
             <TableCell>{props.t('Reward')}</TableCell>
           </TableHead>
           {props.forgedBlocks.map((block, idx) => (
-            <TableRow key={idx}>
+            <TableRow key={idx} className={style.row}>
               <TableCell><FormattedNumber val={block.height} /></TableCell>
               <TableCell>{block.id}</TableCell>
               <TableCell><TooltipTime label={block.timestamp} /></TableCell>
