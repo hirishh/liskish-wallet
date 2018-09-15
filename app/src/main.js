@@ -27,8 +27,9 @@ app.on('window-all-closed', () => {
 
 // This will override the values defined in the app’s .plist file (macOS)
 if (process.platform === 'darwin') {
-  const copyright = `Copyright © 2016 - ${new Date().getFullYear()} Lisk Foundation`;
-  app.setAboutPanelOptions({ applicationName: 'Liskish Wallet', copyright });
+  const copyright = 'Copyright © 2018 Matteo Ferrari (hirish)';
+  const copyrightLisk = 'Copyright © 2016 - 2018 Lisk Foundation';
+  app.setAboutPanelOptions({ applicationName: 'Liskish Wallet', copyright: `${copyright}\n${copyrightLisk}` });
 }
 
 app.on('activate', () => {
