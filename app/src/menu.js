@@ -17,7 +17,7 @@ const addAboutMenuForMac = ({ template, name }) => {
 };
 
 const addAboutMenuForNonMac = ({ template, electron }) => {
-  const copyright = 'Copyright © 2018 Matteo Ferrari (hirish)';
+  const copyright = 'Copyright © 2018 hirish';
   const copyrightLisk = 'Copyright © 2016 - 2018 Lisk Foundation';
   template[template.length - 1].submenu.push({
     label: i18n.t('About'),
