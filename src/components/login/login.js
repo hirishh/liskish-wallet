@@ -1,11 +1,13 @@
 import React from 'react';
 import grid from 'flexboxgrid/dist/flexboxgrid.css';
-import Input from 'react-toolbox/lib/input';
-import Dropdown from 'react-toolbox/lib/dropdown';
-import Button from 'react-toolbox/lib/button';
+import { Input } from 'react-toolbox/lib/input';
+import { Dropdown } from 'react-toolbox/lib/dropdown';
+import { Button } from 'react-toolbox/lib/button';
+import { Tabs, Tab } from 'react-toolbox/lib/tabs';
 import i18next from 'i18next';
-import { getAccountFromLedgerIndex } from '../../utils/ledger';
+import { getHWAccountFromIndex, getLoginTypeFromDevice } from '../../utils/hwWallet';
 import PassphraseInput from '../passphraseInput';
+import HwLogin from './hwLogin';
 import styles from './login.css';
 import env from '../../constants/env';
 import networks from '../../constants/networks';
@@ -25,6 +27,7 @@ class Login extends React.Component {
     super();
 
     this.state = {
+      tabIndex: 0,
       passphrase: '',
       address: '',
       network: networks.mainnet.code,
@@ -111,6 +114,10 @@ class Login extends React.Component {
     }
   }
 
+  handleTabChange(index) {
+    this.setState({ tabIndex: index });
+  }
+
   devPreFill() {
     const { networkIndex, address, passphrase } = getLoginData();
 
@@ -156,15 +163,15 @@ class Login extends React.Component {
     }
   }
 
-  async ledgerLogin() {
-    loadingStarted('ledgerLogin');
-
+  async hwLogin(device) {
+    loadingStarted('hwLogin');
+    const loginType = getLoginTypeFromDevice(device);
     let error;
-    let ledgerAccount;
+    let hwAccount;
     // eslint-disable-next-line prefer-const
-    [error, ledgerAccount] = await to(getAccountFromLedgerIndex()); // by default index 0
+    [error, hwAccount] = await to(getHWAccountFromIndex(device.deviceId, loginType, 0));
     if (error) {
-      const text = error && error.message ? `${error.message}.` : i18next.t('Error during login with Ledger.');
+      const text = error && error.message ? `${error.message}` : i18next.t('Error during login.');
       this.props.errorToastDisplayed({ label: text });
     } else {
       const network = Object.assign({}, getNetwork(this.state.network));
@@ -173,20 +180,46 @@ class Login extends React.Component {
       }
       // set active peer
       this.props.activePeerSet({
-        publicKey: ledgerAccount.publicKey,
-        loginType: loginTypes.ledgerNano,
+        publicKey: hwAccount.publicKey,
+        loginType,
         network,
-        hwInfo: { // Use pubKey[0] first 10 char as device id
-          deviceId: ledgerAccount.publicKey.substring(0, 10),
+        hwInfo: {
+          device,
+          deviceId: device.deviceId,
           derivationIndex: 0,
         },
       });
     }
-
-    loadingFinished('ledgerLogin');
+    loadingFinished('hwLogin');
   }
 
   render() {
+    const passphraseTab = <div>
+      <PassphraseInput label={this.props.t('Enter your passphrase')}
+        className='passphrase'
+        theme={styles}
+        error={this.state.passphraseValidity}
+        value={this.state.passphrase}
+        onChange={this.changeHandler.bind(this, 'passphrase')} />
+      <footer className={ `${grid.row} ${grid['center-xs']}` }>
+        <div className={grid['col-xs-12']}>
+          <RelativeLink to='register' flat primary
+            className={`${styles.newAccount} new-account-button`}>
+            {this.props.t('New Account')}
+          </RelativeLink>
+          <Button label={this.props.t('Login')} primary raised
+            className='login-button'
+            type='submit'
+            disabled={(this.state.network === networks.customNode.code && this.state.addressValidity !== '') ||
+                  this.state.passphraseValidity !== ''} />
+        </div>
+      </footer>
+    </div>;
+
+    const hardwareWalletTab = <div key='hw-device-div' className={ `${grid.row} ${grid['col-sm-12']} ${grid['center-xs']} ${styles.tabcontent}` }>
+      <HwLogin t={this.props.t} hwLogin={this.hwLogin.bind(this)}/>
+    </div>;
+
     return (
       <div className={`box ${styles.wrapper}`}>
         <div className={grid.row}>
@@ -211,42 +244,11 @@ class Login extends React.Component {
                     error={this.state.addressValidity}
                     onChange={this.changeHandler.bind(this, 'address')} />
               }
-              <PassphraseInput label={this.props.t('Enter your passphrase')}
-                className='passphrase'
-                theme={styles}
-                error={this.state.passphraseValidity}
-                value={this.state.passphrase}
-                onChange={this.changeHandler.bind(this, 'passphrase')} />
-              <footer className={ `${grid.row} ${grid['center-xs']}` }>
-                <div className={grid['col-xs-12']}>
-                  <RelativeLink to='register' flat primary
-                    className={`${styles.newAccount} new-account-button`}>
-                    {this.props.t('New Account')}
-                  </RelativeLink>
-                  <Button label={this.props.t('Login')} primary raised
-                    className='login-button'
-                    type='submit'
-                    disabled={(this.state.network === networks.customNode.code && this.state.addressValidity !== '') ||
-                    this.state.passphraseValidity !== ''} />
-                </div>
-              </footer>
 
-              <div className={ `${grid.row} ${grid['col-xs-12']} ${grid['center-xs']}` }>
-
-                <div className={ `${grid['col-xs-8']} ${grid['center-xs']}` }>
-                  <br />
-                  <hr className={`${styles.styleOr}`} />
-                  <br />
-                </div>
-
-                <div className={grid['col-xs-12']}>
-                  <Button label={this.props.t('Login with Ledger Nano S')} primary raised
-                    className='login-button'
-                    onClick={this.ledgerLogin.bind(this)}
-                    type='button'
-                    disabled={(this.state.network === networks.customNode.code && this.state.addressValidity !== '')} />
-                </div>
-              </div>
+              <Tabs className={`${styles.tabcontent}`} index={this.state.tabIndex} onChange={this.handleTabChange.bind(this)} fixed>
+                <Tab className={`${styles.whitetext}`} label='Hardware Wallet'>{hardwareWalletTab}</Tab>
+                <Tab className={`${styles.whitetext}`} label='Passphrase'>{passphraseTab}</Tab>
+              </Tabs>
 
             </form>
           </div>

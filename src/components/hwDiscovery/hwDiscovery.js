@@ -5,8 +5,7 @@ import InfoParagraph from '../infoParagraph';
 import ActionBar from '../actionBar';
 import { fromRawLsk } from '../../utils/lsk';
 import votingConst from '../../constants/voting';
-import loginTypes from '../../constants/loginTypes';
-import { getLedgerAccountInfo } from '../../utils/api/ledger';
+import { getHWAccountInfo } from '../../utils/api/hwWallet';
 import { loadingStarted, loadingFinished } from '../../utils/loading';
 
 import styles from './hwDiscovery.css';
@@ -28,21 +27,14 @@ class HwDiscovery extends React.Component {
 
   /* eslint-disable no-await-in-loop */
   async componentDidMount() {
+    const deviceId = this.props.account.hwInfo.deviceId;
+    const loginType = this.props.account.loginType;
     let index = 0;
     let accountInfo;
     loadingStarted('hwDiscovery');
     do {
       try {
-        switch (this.props.account.loginType) {
-          case loginTypes.ledgerNano:
-            accountInfo = await getLedgerAccountInfo(this.props.activePeer, index);
-            break;
-          case loginTypes.trezor:
-            this.props.errorToastDisplayed({ text: this.props.t('Not Yet Implemented. Sorry.') });
-            break;
-          default:
-            this.props.errorToastDisplayed({ text: this.props.t('Login Type not recognized.') });
-        }
+        accountInfo = await getHWAccountInfo(this.props.activePeer, deviceId, loginType, index);
       } catch (error) {
         loadingFinished('hwDiscovery');
         const text = error && error.message ? `${error.message}.` : this.props.t('Error while retrievieng addresses information.');
@@ -83,6 +75,7 @@ class HwDiscovery extends React.Component {
       activePeer: this.props.activePeer,
       loginType: this.props.account.loginType,
       hwInfo: {
+        device: this.props.account.hwInfo.device,
         deviceId: this.props.account.hwInfo.deviceId,
         derivationIndex: index,
       },
@@ -160,7 +153,7 @@ class HwDiscovery extends React.Component {
           }}
           primaryButton={{
             label: this.props.t('Create a New Lisk Account'),
-            type: 'buttom',
+            type: 'button',
             className: 'register-button',
             onClick: this.showNextAvailableWallet.bind(this),
           }} />

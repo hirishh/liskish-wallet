@@ -1,0 +1,26 @@
+.tableWrapper {
+  margin: -24px -24px 24px -24px;
+}
+
+.alignCenter {
+  text-align: center;
+}
+
+.row {
+  color: #fff;
+
+  &:hover {
+    background-color: #555;
+  }
+}
+
+.iconCell {
+  width: 24px;
+  text-align: center;
+}
+
+.iconCellLoading {
+  font-weight: bold;
+  text-align: center;
+  color: #fff !important;
+}

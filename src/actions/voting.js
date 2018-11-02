@@ -5,7 +5,7 @@ import {
   listDelegates,
   vote,
 } from '../utils/api/delegate';
-import { voteWithLedger } from '../utils/api/ledger';
+import { voteWithHW } from '../utils/api/hwWallet';
 import { passphraseUsed } from './account';
 import { transactionAdded } from './transactions';
 import Fees from '../constants/fees';
@@ -94,30 +94,18 @@ export const votePlaced = ({ activePeer, passphrase, account, votes, secondPassp
     let error;
     let callReslut;
 
-    switch (account.loginType) {
-      case loginTypes.passphrase:
-        [error, callReslut] = await to(vote(activePeer, passphrase, account.publicKey,
-          votedList, unvotedList, secondPassphrase));
-        break;
-
-      // eslint-disable-next-line no-case-declarations
-      case loginTypes.ledgerNano:
-        [error, callReslut] =
-          await to(voteWithLedger(activePeer, account, votedList, unvotedList, secondPassphrase));
-        break;
-
-      case loginTypes.trezor:
-        dispatch(errorAlertDialogDisplayed({ text: i18next.t('Not Yet Implemented. Sorry.') }));
-        break;
-
-      default:
-        dispatch(errorAlertDialogDisplayed({ text: i18next.t('Login Type not recognized.') }));
+    if (account.loginType === loginTypes.passphrase) {
+      [error, callReslut] = await to(vote(activePeer, passphrase, account.publicKey,
+        votedList, unvotedList, secondPassphrase));
+    } else {
+      [error, callReslut] =
+        await to(voteWithHW(activePeer, account, votedList, unvotedList, secondPassphrase));
     }
 
     loadingFinished('votePlaced');
 
     if (error) {
-      const text = error && error.message ? `${error.message}.` : i18next.t('An error occurred while creating the transaction.');
+      const text = error && error.message ? `${error.message}` : i18next.t('An error occurred while creating the transaction.');
       dispatch(errorAlertDialogDisplayed({ text }));
     } else {
       dispatch(pendingVotesAdded());
@@ -162,7 +150,7 @@ export const delegatesFetched = ({ activePeer, search, offset, refresh }) =>
     listDelegates(
       activePeer, {
         offset,
-        limit: '100',
+        limit: '101',
         ...(search === '' ? {} : { search }),
       },
     ).then(({ data, totalCount }) => {
@@ -187,9 +175,11 @@ export const urlVotesFound = ({ activePeer, upvotes, unvotes, address }) =>
     listAccountDelegates(activePeer, address)
       .then(({ data }) => {
         loadingFinished('urlVotesFound');
-        processUrlVotes(data);
+        processUrlVotes(data.votes);
       })
-      .catch(() => {
+      .catch((error) => {
+        // eslint-disable-next-line no-console
+        console.error('urlVotesFound ERROR: ', error);
         loadingFinished('urlVotesFound');
         processUrlVotes([]);
       });

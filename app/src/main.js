@@ -1,3 +1,4 @@
+import 'babel-polyfill'; // eslint-disable-line import/no-extraneous-dependencies
 import electron from 'electron'; // eslint-disable-line import/no-extraneous-dependencies
 import electronLocalshortcut from 'electron-localshortcut'; // eslint-disable-line import/no-extraneous-dependencies
 import { autoUpdater } from 'electron-updater'; // eslint-disable-line import/no-extraneous-dependencies
@@ -6,9 +7,7 @@ import storage from 'electron-json-storage'; // eslint-disable-line import/no-ex
 import win from './modules/win';
 import localeHandler from './modules/localeHandler';
 import updateChecker from './modules/autoUpdater';
-
-require('babel-polyfill'); // eslint-disable-line import/no-extraneous-dependencies
-require('./ledger');
+import './hw/hwManager';
 
 const checkForUpdates = updateChecker({ autoUpdater, dialog: electron.dialog, win, process });
 

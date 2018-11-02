@@ -25,32 +25,32 @@ const Header = props => (
       >
         {
           !props.account.isDelegate &&
-            <MenuItem disabled={props.account.loginType !== loginTypes.passphrase} theme={styles}>
+            <MenuItem theme={styles} disabled={props.account.loginType !== loginTypes.passphrase}>
               <RelativeLink className={`register-as-delegate ${styles.menuLink}`}
                 to='register-delegate'>{props.t('Register as delegate')}</RelativeLink>
             </MenuItem>
         }
         {
           !props.account.secondPublicKey &&
-            <MenuItem disabled={props.account.loginType !== loginTypes.passphrase} theme={styles}>
+            <MenuItem theme={styles} disabled={props.account.loginType !== loginTypes.passphrase}>
               <RelativeLink className={`register-second-passphrase ${styles.menuLink}`}
                 to='register-second-passphrase'>{props.t('Register second passphrase')}</RelativeLink>
             </MenuItem>
         }
-        <MenuItem theme={styles} disabled={props.account.loginType !== loginTypes.passphrase}>
+        <MenuItem theme={styles}>
           <RelativeLink className={`sign-message ${styles.menuLink}`}
-            to='sign-message'>{props.t('Sign message')} {props.account.loginType === loginTypes.ledgerNano ? '(Coming Soon)' : ''}</RelativeLink>
+            to='sign-message'>{props.t('Sign message')}</RelativeLink>
         </MenuItem>
-        <MenuItem theme={styles} disabled={props.account.loginType !== loginTypes.passphrase}>
+        <MenuItem theme={styles}>
           <RelativeLink className={`verify-message ${styles.menuLink}`}
-            to='verify-message'>{props.t('Verify message')} {props.account.loginType === loginTypes.ledgerNano ? '(Coming Soon)' : ''}</RelativeLink>
+            to='verify-message'>{props.t('Verify message')}</RelativeLink>
         </MenuItem>
         <MenuItem theme={styles} disabled={props.account.loginType !== loginTypes.passphrase}>
-          <RelativeLink disableWhenLedger className={`encrypt-message ${styles.menuLink}`}
+          <RelativeLink disableWhenHW className={`encrypt-message ${styles.menuLink}`}
             to='encrypt-message'>{props.t('Encrypt message')}</RelativeLink>
         </MenuItem>
         <MenuItem theme={styles} disabled={props.account.loginType !== loginTypes.passphrase}>
-          <RelativeLink disableWhenLedger className={`decrypt-message ${styles.menuLink}`}
+          <RelativeLink disableWhenHW className={`decrypt-message ${styles.menuLink}`}
             to='decrypt-message'>{props.t('Decrypt message')}</RelativeLink>
         </MenuItem>
         <MenuDivider />
