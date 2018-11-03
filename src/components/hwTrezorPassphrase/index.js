@@ -49,11 +49,12 @@ class HwTrezorPassphraseDialog extends React.Component {
 
   render() {
     return (
-      <div className={styles.pinWrapper}>
-        <div className={`${grid.row} ${grid['col-sm-12']} ${grid['center-xs']}`}>
+      <div>
+        <div className={`${grid['col-xs-12']} ${grid['col-sm-10']} ${grid['col-sm-offset-1']}`}>
           <InfoParagraph>
-            {this.props.t('Passphrase encryption adds an extra custom word to your recovery seed. This allows you to access new wallets, each hidden behind a particular passphrase.')}
-            {this.props.t('Use empty passphrase to access your original account.')}
+            {this.props.t('Passphrase encryption adds an extra custom word to your recovery seed.')}<br />
+            {this.props.t('This allows you to access new wallets, each hidden behind a particular passphrase.')}<br /><br />
+            <strong>NB</strong>: {this.props.t('Use empty passphrase to access your original account.')}
           </InfoParagraph>
         </div>
         <div className={`${grid.row} ${grid['col-sm-12']} ${grid['center-xs']}`}>
