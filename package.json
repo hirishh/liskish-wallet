@@ -1,52 +1,59 @@
 {
-  "name": "lisk-nano",
-  "version": "2.0.0",
-  "description": "Lisk Nano",
-  "homepage": "https://github.com/LiskHQ/lisk-nano",
-  "bugs": "https://github.com/LiskHQ/lisk-nano/issues",
+  "name": "liskish-wallet",
+  "version": "2.0.0-alpha-ledger-rc.3",
+  "description": "Liskish Wallet",
+  "homepage": "https://github.com/hirishh/liskish-wallet",
+  "bugs": "https://github.com/hirishh/liskish-wallet/issues",
   "main": "main.js",
   "scripts": {
     "build": "npm run clean-build && npm run copy-files && npm run build-prod && npm run build-electron",
-    "dev": "webpack-dev-server --config ./config/webpack.config.dev --env.dev --hot",
+    "dev": "webpack-dev-server --config ./config/webpack.config.dev --env.dev --hot --https",
     "build-prod": "webpack --config ./config/webpack.config.prod --env.prod",
     "build-electron": "webpack --config ./config/webpack.config.electron",
     "e2e-test": "protractor protractor.conf.js",
     "test": "karma start",
     "test-live": "npm test -- --auto-watch --no-single-run",
     "start": "electron ./app/",
-    "dist": "build --ia32 --x64 --armv7l --publish onTag",
-    "dist:win": "build --win --ia32 --x64 --publish onTag",
+    "dist": "build --x64 --publish onTag",
+    "dist:win": "build --win --x64 --publish onTag",
     "dist:mac": "build --mac",
-    "dist:linux": "build --linux --ia32 --x64 --armv7l",
+    "dist:linux": "build --linux --x64",
     "copy-files": "cpx \"./src/{index.html,assets/**/*}\" ./app/build/",
     "clean-build": "rm -rf app/build",
     "clean-dist": "rm -rf dist",
     "eslint": "eslint ./",
+    "postinstall": "electron-rebuild --force",
     "pack": "npm install && npm run build && npm run clean-dist && npm run dist",
     "pack:win": "cmd /c npm install && npm run clean-build && npm run copy-files && npm run build-prod && npm run build-electron && npm run clean-dist && npm run dist:win",
     "storybook": "start-storybook -p 6006 -s ./src/",
     "build-storybook": "build-storybook",
     "serve": "http-server"
   },
-  "author": "Lisk Foundation <admin@lisk.io>, lightcurve GmbH <admin@lightcurve.io>",
+  "author": "Matteo Ferrari (hirish) <matteo.ferrari@sapiensproject.io>, Lisk Foundation <admin@lisk.io>, lightcurve GmbH <admin@lightcurve.io>",
   "license": "GPL-3.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/LiskHQ/lisk-nano"
+    "url": "https://github.com/hirishh/liskish-wallet"
   },
   "dependencies": {
+    "@ledgerhq/hw-transport-node-hid": "^4.22.0",
+    "@ledgerhq/hw-transport-u2f": "^4.21.0",
+    "babel-polyfill": "6.26.0",
     "bignumber.js": "4.0.4",
     "bitcore-mnemonic": "1.2.5",
+    "browser-or-node": "1.0.2",
     "copy-to-clipboard": "3.0.8",
+    "dpos-ledger-api": "1.1.0",
     "electron-localshortcut": "^2.0.2",
     "flexboxgrid": "=6.3.1",
-    "hard-source-webpack-plugin": "0.4.11",
     "history": "=4.7.2",
     "i18next": "=10.0.3",
     "i18next-localstorage-cache": "=1.1.1",
     "i18next-xhr-backend": "=1.4.2",
+    "is-electron": "2.1.0",
     "lisk-elements": "1.0.0",
     "moment": "2.20.1",
+    "node-hid": "0.7.2",
     "numeral": "=2.0.6",
     "postcss": "6.0.12",
     "postcss-cssnext": "2.11.0",
@@ -88,9 +95,10 @@
     "css-loader": "0.28.7",
     "cucumber": "2.2.0",
     "del-cli": "1.1.0",
-    "electron": "1.8.2-beta.4",
-    "electron-builder": "19.32.2",
+    "electron": "1.8.8",
+    "electron-builder": "20.28.3",
     "electron-json-storage": "=3.2.0",
+    "electron-rebuild": "1.8.2",
     "electron-updater": "2.16.1",
     "enzyme": "=3.1.0",
     "enzyme-adapter-react-16": "=1.0.2",
@@ -106,6 +114,7 @@
     "extract-text-webpack-plugin": "3.0.0",
     "file-loader": "1.1.0",
     "glob": "=7.1.2",
+    "hard-source-webpack-plugin": "0.12.0",
     "http-server": "0.11.1",
     "i18next-scanner": "=2.0.0",
     "imports-loader": "0.7.1",
@@ -151,24 +160,21 @@
     "webpack-dev-server": "2.8.2"
   },
   "build": {
-    "appId": "io.lisk.nano",
-    "productName": "Lisk Nano",
+    "appId": "io.liskish.wallet",
+    "productName": "Liskish Wallet",
     "protocols": {
-      "name": "lisk-nano",
+      "name": "liskish-wallet",
       "schemes": [
         "lisk"
       ]
     },
-    "artifactName": "lisk-nano-${os}-${arch}-${version}.${ext}",
+    "artifactName": "liskish-wallet-${os}-${arch}-${version}.${ext}",
     "publish": [
       "github"
     ],
     "linux": {
       "target": [
-        "AppImage",
-        "deb",
-        "rpm",
-        "tar.gz"
+        "AppImage"
       ],
       "desktop": {
         "MimeType": "application/lisk;x-scheme-handler/lisk"

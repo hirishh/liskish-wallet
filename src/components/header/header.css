@@ -10,8 +10,8 @@
 .logo {
   width: 100%;
   min-width: 108px;
-  max-width: 200px;
-  padding: 8px;
+  max-width: 400px;
+  padding: 4px;
 }
 
 .button,
@@ -43,4 +43,9 @@
   color: rgba(0, 0, 0, 0.87);
   padding-left: 16px;
   padding-right: 16px;
+}
+
+.disableWhenLedger {
+  opacity: 0.5;
+  pointer-events: none;
 }

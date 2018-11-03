@@ -8,11 +8,11 @@
 .inButton,
 .outButton,
 .smallButton {
-  background-color: #eee;
+  background-color: #555;
   border-radius: 3px;
   padding: 6px;
   text-transform: uppercase;
-  color: #000;
+  color: #fff;
   display: block;
 }
 
@@ -21,7 +21,7 @@
 }
 
 .inButton {
-  background: color(var(--in) alpha(45%)) !important;
+  background-color: color(var(--in) alpha(45%)) !important;
 }
 
 .empty {

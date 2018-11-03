@@ -8,7 +8,7 @@
   }
 
   & p {
-    color: rgba(0, 0, 0, 0.87);
+    color: rgba(255, 255, 255, 0.87);
     line-height: 1.4em;
     font-size: 1em;
   }
@@ -26,13 +26,15 @@
   & hr {
     border-bottom-width: 0;
     margin: 16px -24px;
-    border-color: rgba(0, 0, 0, 0.12);
+    border-color: rgba(255, 255, 255, 0.12);
   }
 }
 
 .body {
   border-radius: 2px 2px 0 0;
   padding: 0px;
+  background-color: #4c586f;
+  color: #fff;
 }
 
 .innerBody {

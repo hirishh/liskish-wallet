@@ -63,6 +63,8 @@ class Send extends React.Component {
       return this.props.t('Zero not allowed');
     } else if (name === 'reference' && value.length > 64) {
       return this.props.t('Maximum length of 64 characters is exceeded.');
+    } else if (name === 'reference' && (value !== value.toString('utf8'))) {
+      return this.props.t('Invalid encoding in transaction data. Data must be utf-8 encoded.');
     }
     return undefined;
   }
@@ -116,7 +118,7 @@ class Send extends React.Component {
             secondPassphrase={this.state.secondPassphrase}
             onChange={this.handleChange.bind(this)} />
           <div className={styles.fee}> {this.props.t('Fee: {{fee}} LSK', { fee: this.state.fee })} </div>
-          <IconMenu icon='more_vert' position='topRight' menuRipple className={`${styles.sendAllMenu} transaction-amount`} >
+          <IconMenu icon='more_vert' position='topRight' menuRipple inverse={true} className={`${styles.sendAllMenu} transaction-amount`} >
             <MenuItem onClick={this.setMaxAmount.bind(this)}
               caption={this.props.t('Set maximum amount')}
               className='send-maximum-amount'/>
@@ -134,7 +136,7 @@ class Send extends React.Component {
                 !this.state.recipient.value ||
                 !!this.state.amount.error ||
                 !this.state.amount.value ||
-                !authStateIsValid(this.state)),
+                !authStateIsValid(this.state, this.props.account)),
             }} />
         </form>
       </div>

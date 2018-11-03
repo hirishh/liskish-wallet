@@ -17,7 +17,7 @@ describe('Login', () => {
   const account = {
     isDelegate: false,
     address: '16313739661670634666L',
-    username: 'lisk-nano',
+    username: 'liskish-wallet',
   };
   const peers = { data: {} };
   const store = configureMockStore([])({

@@ -17,15 +17,16 @@ const addAboutMenuForMac = ({ template, name }) => {
 };
 
 const addAboutMenuForNonMac = ({ template, electron }) => {
-  const copyright = `Copyright © 2016 - ${new Date().getFullYear()} Lisk Foundation`;
+  const copyright = 'Copyright © 2018 hirish';
+  const copyrightLisk = 'Copyright © 2016 - 2018 Lisk Foundation';
   template[template.length - 1].submenu.push({
     label: i18n.t('About'),
     click(item, focusedWindow) {
       if (focusedWindow) {
         const options = {
           buttons: ['OK'],
-          icon: `${__dirname}/assets/images/LISK.png`,
-          message: `${i18n.t('Lisk Nano')}\n${i18n.t('Version')} ${electron.app.getVersion()}\n${copyright}`,
+          icon: `${__dirname}/assets/images/LISKISH.png`,
+          message: `${i18n.t('Liskish Wallet')}\n${i18n.t('Version')} ${electron.app.getVersion()}\n${copyright}\n${copyrightLisk}`,
         };
         electron.dialog.showMessageBox(focusedWindow, options, () => {});
       }
@@ -113,6 +114,34 @@ const menu = {
         ],
       },
       {
+        label: i18n.t('More by Hirish'),
+        submenu: [
+          {
+            label: i18n.t('Lisk Listen'),
+            click: menu.onClickLink.bind(null, electron, 'https://lisklisten.net'),
+          },
+          {
+            label: i18n.t('Lisk C64'),
+            click: menu.onClickLink.bind(null, electron, 'https://liskc64.net/'),
+          },
+          {
+            type: 'separator',
+          },
+          {
+            label: i18n.t('GDT Website'),
+            click: menu.onClickLink.bind(null, electron, 'https://pool.liskgdt.net/'),
+          },
+          {
+            label: i18n.t('Check your GDT Membership'),
+            click: menu.onClickLink.bind(null, electron, 'https://check.liskgdt.net/'),
+          },
+          {
+            label: i18n.t('Vote for me and ask a fee refund!'),
+            click: menu.onClickLink.bind(null, electron, 'https://refund.liskgdt.net/'),
+          },
+        ],
+      },
+      {
         label: i18n.t('Help'),
         submenu: [
           {
@@ -128,19 +157,22 @@ const menu = {
             click: menu.onClickLink.bind(null, electron, 'https://explorer.lisk.io'),
           },
           {
-            label: i18n.t('Lisk Forum'),
-            click: menu.onClickLink.bind(null, electron, 'https://forum.lisk.io'),
+            label: i18n.t('Lisk Explorer (4miners)'),
+            click: menu.onClickLink.bind(null, electron, 'https://explorer.lisk.4miners.net/'),
           },
           {
             type: 'separator',
           },
           {
             label: i18n.t('Report Issue...'),
-            click: menu.onClickLink.bind(null, electron, 'https://lisk.zendesk.com/hc/en-us/requests/new'),
+            click: menu.onClickLink.bind(null, electron, 'https://github.com/hirishh/liskish-wallet/issues'),
           },
           {
             label: i18n.t('What\'s New...'),
-            click: menu.onClickLink.bind(null, electron, 'https://github.com/LiskHQ/lisk-nano/releases'),
+            click: menu.onClickLink.bind(null, electron, 'https://github.com/hirishh/liskish-wallet/releases'),
+          },
+          {
+            type: 'separator',
           },
         ],
       },

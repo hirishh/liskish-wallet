@@ -2,9 +2,9 @@ import { Button } from 'react-toolbox/lib/button';
 import { IconMenu, MenuItem, MenuDivider } from 'react-toolbox/lib/menu';
 import React from 'react';
 import grid from 'flexboxgrid/dist/flexboxgrid.css';
-
+import loginTypes from '../../constants/loginTypes';
 import PrivateWrapper from '../privateWrapper';
-import logo from '../../assets/images/LISK-nano.png';
+import logo from '../../assets/images/liskish-wallet.png';
 import offlineStyle from '../offlineWrapper/offlineWrapper.css';
 import styles from './header.css';
 import RelativeLink from '../relativeLink';
@@ -18,37 +18,39 @@ const Header = props => (
       <IconMenu
         className={`${styles.iconButton} main-menu-icon-button ${offlineStyle.disableWhenOffline}`}
         icon="more_vert"
+        inverse={true}
         position="topRight"
         menuRipple
         theme={styles}
       >
         {
           !props.account.isDelegate &&
-            <MenuItem theme={styles}>
+            <MenuItem disabled={props.account.loginType !== loginTypes.passphrase} theme={styles}>
               <RelativeLink className={`register-as-delegate ${styles.menuLink}`}
                 to='register-delegate'>{props.t('Register as delegate')}</RelativeLink>
             </MenuItem>
         }
         {
           !props.account.secondPublicKey &&
-            <MenuItem theme={styles}>
+            <MenuItem disabled={props.account.loginType !== loginTypes.passphrase} theme={styles}>
               <RelativeLink className={`register-second-passphrase ${styles.menuLink}`}
                 to='register-second-passphrase'>{props.t('Register second passphrase')}</RelativeLink>
             </MenuItem>
         }
-        <MenuItem theme={styles}>
-          <RelativeLink className={`sign-message ${styles.menuLink}`} to='sign-message'>{props.t('Sign message')}</RelativeLink>
+        <MenuItem theme={styles} disabled={props.account.loginType !== loginTypes.passphrase}>
+          <RelativeLink className={`sign-message ${styles.menuLink}`}
+            to='sign-message'>{props.t('Sign message')} {props.account.loginType === loginTypes.ledgerNano ? '(Coming Soon)' : ''}</RelativeLink>
         </MenuItem>
-        <MenuItem theme={styles}>
+        <MenuItem theme={styles} disabled={props.account.loginType !== loginTypes.passphrase}>
           <RelativeLink className={`verify-message ${styles.menuLink}`}
-            to='verify-message'>{props.t('Verify message')}</RelativeLink>
+            to='verify-message'>{props.t('Verify message')} {props.account.loginType === loginTypes.ledgerNano ? '(Coming Soon)' : ''}</RelativeLink>
         </MenuItem>
-        <MenuItem theme={styles}>
-          <RelativeLink className={`encrypt-message ${styles.menuLink}`}
+        <MenuItem theme={styles} disabled={props.account.loginType !== loginTypes.passphrase}>
+          <RelativeLink disableWhenLedger className={`encrypt-message ${styles.menuLink}`}
             to='encrypt-message'>{props.t('Encrypt message')}</RelativeLink>
         </MenuItem>
-        <MenuItem theme={styles}>
-          <RelativeLink className={`decrypt-message ${styles.menuLink}`}
+        <MenuItem theme={styles} disabled={props.account.loginType !== loginTypes.passphrase}>
+          <RelativeLink disableWhenLedger className={`decrypt-message ${styles.menuLink}`}
             to='decrypt-message'>{props.t('Decrypt message')}</RelativeLink>
         </MenuItem>
         <MenuDivider />
@@ -57,7 +59,8 @@ const Header = props => (
             to='saved-accounts'>{props.t('Saved accounts')}</RelativeLink>
         </MenuItem>
         <MenuItem theme={styles}>
-          <RelativeLink className={`settings ${styles.menuLink}`} to='settings'>{props.t('Settings')}</RelativeLink>
+          <RelativeLink className={`settings ${styles.menuLink}`}
+            to='settings'>{props.t('Settings')}</RelativeLink>
         </MenuItem>
       </IconMenu>
 
@@ -66,6 +69,12 @@ const Header = props => (
         to='receive'>{props.t('Receive LSK')}</RelativeLink>
       <RelativeLink primary raised disableWhenOffline className={`${styles.button} send-button`}
         to='send'>{props.t('send')}</RelativeLink>
+      {
+        props.account.loginType !== loginTypes.passphrase &&
+        <RelativeLink primary raised disableWhenOffline className={`${styles.button} discovery-button`}
+          to='hw-discovery'>{props.t('HW Address Discovery')}</RelativeLink>
+      }
+
     </PrivateWrapper>
   </header>
 );

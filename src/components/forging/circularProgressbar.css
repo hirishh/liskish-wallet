@@ -14,7 +14,7 @@
 }
 
 :global .CircularProgressbar .CircularProgressbar-trail {
-  stroke: #d6d6d6;
+  stroke: #bbb;
 }
 
 :global .CircularProgressbar .CircularProgressbar-text {

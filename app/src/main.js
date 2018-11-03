@@ -7,12 +7,14 @@ import win from './modules/win';
 import localeHandler from './modules/localeHandler';
 import updateChecker from './modules/autoUpdater';
 
+require('babel-polyfill'); // eslint-disable-line import/no-extraneous-dependencies
+require('./ledger');
+
 const checkForUpdates = updateChecker({ autoUpdater, dialog: electron.dialog, win, process });
 
 const { app, ipcMain } = electron;
 
 let appIsReady = false;
-
 
 app.on('ready', () => {
   appIsReady = true;
@@ -27,8 +29,9 @@ app.on('window-all-closed', () => {
 
 // This will override the values defined in the app’s .plist file (macOS)
 if (process.platform === 'darwin') {
-  const copyright = `Copyright © 2016 - ${new Date().getFullYear()} Lisk Foundation`;
-  app.setAboutPanelOptions({ applicationName: 'Lisk Nano', copyright });
+  const copyright = 'Copyright © 2018 hirish';
+  const copyrightLisk = 'Copyright © 2016 - 2018 Lisk Foundation';
+  app.setAboutPanelOptions({ applicationName: 'Liskish Wallet', copyright: `${copyright}\n${copyrightLisk}` });
 }
 
 app.on('activate', () => {
