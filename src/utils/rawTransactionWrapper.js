@@ -6,6 +6,8 @@ import transactionTypes from '../constants/transactionTypes';
  * TODO: when it will fully support raw transactions.
  */
 
+const bufferOffsetTimestamp = 10;
+
 const createAsset = data => ((data && data.length > 0) ? { data } : {});
 
 export const createSendTX = (senderPublicKey, recipientId, amount, data = null) => {
@@ -15,7 +17,7 @@ export const createSendTX = (senderPublicKey, recipientId, amount, data = null) 
     fee: Lisk.transaction.constants.TRANSFER_FEE.toString(),
     senderPublicKey,
     recipientId,
-    timestamp: Lisk.transaction.utils.getTimeFromBlockchainEpoch() - 100,
+    timestamp: Lisk.transaction.utils.getTimeFromBlockchainEpoch() - bufferOffsetTimestamp,
     asset: createAsset(data),
   };
   return transaction;
@@ -28,7 +30,7 @@ export const createDelegateTX = (senderPublicKey, username) => {
     fee: Lisk.transaction.constants.DELEGATE_FEE.toString(),
     senderPublicKey,
     recipientId: '',
-    timestamp: Lisk.transaction.utils.getTimeFromBlockchainEpoch() - 100,
+    timestamp: Lisk.transaction.utils.getTimeFromBlockchainEpoch() - bufferOffsetTimestamp,
     asset: {
       delegate: {
         username,
@@ -45,7 +47,7 @@ export const createSecondPassphraseTX = (senderPublicKey, secondPublicKey) => {
     fee: Lisk.transaction.constants.SIGNATURE_FEE.toString(),
     senderPublicKey,
     recipientId: '',
-    timestamp: Lisk.transaction.utils.getTimeFromBlockchainEpoch() - 100,
+    timestamp: Lisk.transaction.utils.getTimeFromBlockchainEpoch() - bufferOffsetTimestamp,
     asset: {
       signature: {
         publicKey: secondPublicKey,
@@ -66,14 +68,11 @@ export const createRawVoteTX = (senderPublicKey, recipientId, votedList, unvoted
     fee: Lisk.transaction.constants.VOTE_FEE.toString(),
     senderPublicKey,
     recipientId,
-    timestamp: Lisk.transaction.utils.getTimeFromBlockchainEpoch() - 100,
+    timestamp: Lisk.transaction.utils.getTimeFromBlockchainEpoch() - bufferOffsetTimestamp,
     asset: { votes: concatVoteLists(votedList, unvotedList) },
   };
   return transaction;
 };
-
-// eslint-disable-next-line max-len
-export const getTransactionBytes = transaction => Lisk.transaction.utils.getTransactionBytes(transaction);
 
 export const getBufferToHex = buffer => Lisk.cryptography.bufferToHex(buffer);
 

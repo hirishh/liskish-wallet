@@ -45,7 +45,7 @@
   padding-right: 16px;
 }
 
-.disableWhenLedger {
+.disableWhenHW {
   opacity: 0.5;
   pointer-events: none;
 }

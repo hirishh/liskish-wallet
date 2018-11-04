@@ -7,7 +7,7 @@ import AuthInputs from '../authInputs';
 import ActionBar from '../actionBar';
 import { authStatePrefill, authStateIsValid } from '../../utils/form';
 import loginTypes from '../../constants/loginTypes';
-import { signMessageWithLedger } from '../../utils/ledger';
+import { signMessageWithHW } from '../../utils/hwWallet';
 import { loadingStarted, loadingFinished } from '../../utils/loading';
 import to from '../../utils/to';
 
@@ -39,36 +39,26 @@ class SignMessageComponent extends React.Component {
 
   /* eslint-disable prefer-const */
   async sign(message) {
+    const elaborateSignResult = (signedMessage, error) => {
+      if (error) {
+        const text = error && error.message ? `${error.message}` : this.props.t('An error occurred while signing the message.');
+        this.props.errorToast({ label: text });
+      } else {
+        this.showResult(message, signedMessage);
+      }
+    };
+
     let error;
     let signedMessage;
-    // Add prefix to message:
-    switch (this.props.account.loginType) {
-      case loginTypes.passphrase:
-        signedMessage = Lisk.cryptography.signMessageWithPassphrase(message,
-          this.state.passphrase.value);
-        this.showResult(message, signedMessage.signature);
-        break;
-
-      // eslint-disable-next-line no-case-declarations
-      case loginTypes.ledgerNano:
-        loadingStarted('signMessageWithLedger');
-        [error, signedMessage] = await to(signMessageWithLedger(this.props.account, message));
-
-        if (error) {
-          const text = error && error.message ? `${error.message}.` : this.props.t('An error occurred while creating the transaction.');
-          this.props.errorToast({ label: text });
-        } else {
-          this.showResult(message, signedMessage);
-        }
-        loadingFinished('signMessageWithLedger');
-        break;
-
-      case loginTypes.trezor:
-        this.props.infoToast({ label: this.props.t('Trezor not yet supported.') });
-        break;
-      default:
-        this.props.errorToast({ label: this.props.t('Login Type not recognized.') });
-        break;
+    if (this.props.account.loginType === loginTypes.passphrase) {
+      signedMessage = Lisk.cryptography.signMessageWithPassphrase(message,
+        this.state.passphrase.value);
+      this.showResult(message, signedMessage.signature);
+    } else {
+      loadingStarted('signMessageWithHW');
+      [error, signedMessage] = await to(signMessageWithHW(this.props.account, message));
+      elaborateSignResult(signedMessage, error);
+      loadingFinished('signMessageWithHW');
     }
   }
 

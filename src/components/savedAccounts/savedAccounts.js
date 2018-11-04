@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { Table, TableHead, TableRow, TableCell } from 'react-toolbox/lib/table';
 import React from 'react';
 import { IconButton } from 'react-toolbox/lib/button';
@@ -36,6 +37,24 @@ const SavedAccounts = ({
     account.publicKey === publicKey &&
     account.network === networkOptions.code);
 
+  const getNetworkLabel = account =>
+    (account.network === networks.customNode.code ?
+      account.address : t(getNetwork(account.network).name));
+
+  const getDeviceLabel = (account) => {
+    if (account.hwInfo.device && account.hwInfo.device.label) {
+      return `Label: ${account.hwInfo.device.label}`;
+    }
+    return `Device ID: ${account.hwInfo.deviceId}`;
+  };
+
+  const getDeviceModel = (account) => {
+    if (account.hwInfo.device && account.hwInfo.device.model) {
+      return account.hwInfo.device.model;
+    }
+    return account.loginType;
+  };
+
   return (
     <div className='save-account'>
       { savedAccounts.length === 0 ?
@@ -65,18 +84,15 @@ const SavedAccounts = ({
                   {extractAddress(account.publicKey)}
                   {account.loginType !== loginTypes.passphrase &&
                     <div className={styles.hwDeviceInfo}>
-                      Account Index: <strong>{account.hwInfo.derivationIndex}</strong> -
-                      Device ID: {account.hwInfo.deviceId}
+                      Account Index: <strong>{account.hwInfo.derivationIndex}</strong> - {getDeviceLabel(account)}
                     </div>
                   }
                 </TableCell>
                 <TableCell>
-                  {account.network === networks.customNode.code ?
-                    account.address :
-                    t(getNetwork(account.network).name)}
+                  { getNetworkLabel(account) }
                 </TableCell>
                 <TableCell>
-                  {account.loginType}
+                  { getDeviceModel(account) }
                 </TableCell>
                 <TableCell className={styles.iconCell} >
                   <IconButton icon='clear' className='forget-button' inverse={true}

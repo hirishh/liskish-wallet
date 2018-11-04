@@ -31,6 +31,9 @@ class Voting extends React.Component {
       setTimeout(() => {
         this.freezeLoading = false;
         this.offset = nextProps.delegates.length;
+        if (this.isInitial) {
+          this.loadVotedDelegates(false);
+        }
         this.isInitial = false;
       }, 5);
     }

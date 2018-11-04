@@ -6,12 +6,12 @@ import {
   createRawVoteTX,
 } from '../rawTransactionWrapper';
 import {
-  calculateSecondPassphraseIndex,
-  signTransactionWithLedger,
-  getAccountFromLedgerIndex,
-} from '../ledger';
+  signTransactionWithHW,
+  getHWAccountFromIndex,
+} from '../hwWallet';
+import { calculateSecondPassphraseIndex } from '../../constants/hwConstants';
 import to from '../to';
-import { getAccount, transactions as getTransactions } from './account';
+import { extractAddress, getAccount, transactions as getTransactions } from './account';
 import { listAccountDelegates as getVotes } from './delegate';
 
 /**
@@ -20,13 +20,13 @@ import { listAccountDelegates as getVotes } from './delegate';
  * @returns Promise - Action Send with Ledger
  */
 /* eslint-disable prefer-const */
-export const sendWithLedger = (activePeer, account, recipientId, amount,
+export const sendWithHW = (activePeer, account, recipientId, amount,
   pin = null, data = null) =>
   new Promise(async (resolve, reject) => {
     const rawTx = createSendTX(account.publicKey, recipientId, amount, data);
     let error;
     let signedTx;
-    [error, signedTx] = await to(signTransactionWithLedger(rawTx, account, pin));
+    [error, signedTx] = await to(signTransactionWithHW(rawTx, account, pin));
     if (error) {
       reject(error);
     } else {
@@ -41,12 +41,12 @@ export const sendWithLedger = (activePeer, account, recipientId, amount,
  * NOTE: secondPassphrase for ledger is a PIN (numeric)
  * @returns Promise - Action RegisterDelegate with Ledger
  */
-export const registerDelegateWithLedger = (activePeer, account, username, pin = null) =>
+export const registerDelegateWithHW = (activePeer, account, username, pin = null) =>
   new Promise(async (resolve, reject) => {
     const rawTx = createDelegateTX(account.publicKey, username);
     let error;
     let signedTx;
-    [error, signedTx] = await to(signTransactionWithLedger(rawTx, account, pin));
+    [error, signedTx] = await to(signTransactionWithHW(rawTx, account, pin));
     if (error) {
       reject(error);
     } else {
@@ -61,12 +61,12 @@ export const registerDelegateWithLedger = (activePeer, account, username, pin = 
  * NOTE: secondPassphrase for ledger is a PIN (numeric)
  * @returns Promise - Action Vote with Ledger
  */
-export const voteWithLedger = (activePeer, account, votedList, unvotedList, pin = null) =>
+export const voteWithHW = (activePeer, account, votedList, unvotedList, pin = null) =>
   new Promise(async (resolve, reject) => {
     const rawTx = createRawVoteTX(account.publicKey, account.address, votedList, unvotedList);
     let error;
     let signedTx;
-    [error, signedTx] = await to(signTransactionWithLedger(rawTx, account, pin));
+    [error, signedTx] = await to(signTransactionWithHW(rawTx, account, pin));
     if (error) {
       reject(error);
     } else {
@@ -81,22 +81,25 @@ export const voteWithLedger = (activePeer, account, votedList, unvotedList, pin 
  * NOTE: secondPassphrase for ledger is a PIN (numeric)
  * @returns Promise - Action SetSecondPassphrase with Ledger
  */
-export const setSecondPassphraseWithLedger = (activePeer, account, pin) =>
+export const setSecondPassphraseWithHW = (activePeer, account, pin) =>
   new Promise(async (resolve, reject) => {
     let error;
     let signedTx;
     let secondAccount;
     [error, secondAccount] =
-      await to(getAccountFromLedgerIndex(
+      await to(getHWAccountFromIndex(
+        account.hwInfo.deviceId,
+        account.loginType,
         calculateSecondPassphraseIndex(account.hwInfo.derivationIndex, pin)));
     if (error) {
       reject(error);
       return;
     }
-    const rawTx = createSecondPassphraseTX(account.publicKey, secondAccount.publicKey);
+    const rawTx =
+      createSecondPassphraseTX(account.publicKey, secondAccount.publicKey);
 
     // No PIN as second Signature
-    [error, signedTx] = await to(signTransactionWithLedger(rawTx, account));
+    [error, signedTx] = await to(signTransactionWithHW(rawTx, account));
     if (error) {
       reject(error);
     } else {
@@ -107,26 +110,26 @@ export const setSecondPassphraseWithLedger = (activePeer, account, pin) =>
   });
 
 
-export const getLedgerAccountInfo = async (activePeer, accountIndex) => {
+export const getHWAccountInfo = async (activePeer, deviceId, loginType, accountIndex) => {
   let error;
-  let liskAccount;
-  [error, liskAccount] = await to(getAccountFromLedgerIndex(accountIndex));
+  let hwAccount;
+  [error, hwAccount] = await to(getHWAccountFromIndex(deviceId, loginType, accountIndex));
   if (error) {
     throw error;
   }
-  let resAccount = await getAccount(activePeer, liskAccount.address);
+  const address = extractAddress(hwAccount.publicKey);
+  let resAccount = await getAccount(activePeer, address);
 
   const isInitialized = !!resAccount.unconfirmedBalance;
   Object.assign(resAccount, { isInitialized });
-  // Set PublicKey from Ledger Info
-  // so we can switch on this account even if publicKey is not revealed to the network
-  Object.assign(resAccount, { publicKey: liskAccount.publicKey });
+  Object.assign(resAccount, { isInitialized, publicKey: hwAccount.publicKey });
 
+  // TODO Detach this from main process
   if (isInitialized) {
-    const txAccount = await getTransactions(activePeer, liskAccount.address);
+    const txAccount = await getTransactions(activePeer, address);
     Object.assign(resAccount, { txCount: txAccount.meta.count });
 
-    const votesAccount = await getVotes(activePeer, liskAccount.address);
+    const votesAccount = await getVotes(activePeer, address);
     Object.assign(resAccount, { votesCount: votesAccount.data.votesUsed });
   }
 

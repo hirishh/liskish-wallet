@@ -1,6 +1,6 @@
 {
   "name": "liskish-wallet",
-  "version": "2.0.0-alpha-ledger-rc.3",
+  "version": "2.0.1-trezor-rc.2",
   "description": "Liskish Wallet",
   "main": "./build/main.js",
   "author": {

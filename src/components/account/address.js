@@ -6,21 +6,15 @@ import { TooltipWrapper } from '../timestamp';
 import styles from './account.css';
 
 const getStatusTooltip = (props) => {
-  switch (props.loginType) {
-    case loginTypes.passphrase:
-      if (props.secondPublicKey) {
-        return props.t('This account is protected by a second passphrase');
-      } else if (props.passphrase) {
-        return props.t('Passphrase of the account is saved till the end of the session.');
-      }
-      return props.t('Passphrase of the account will be required to perform any transaction.');
-    case loginTypes.ledgerNano:
-      return props.t('Your Ledger Nano S will be required to perform any transaction.');
-    case loginTypes.trezor:
-      return props.t('Your Trezor will be required to perform any transaction.');
-    default:
-      return props.t('Login Type not recognized.');
+  if (props.loginType === loginTypes.passphrase) {
+    if (props.secondPublicKey) {
+      return props.t('This account is protected by a second passphrase');
+    } else if (props.passphrase) {
+      return props.t('Passphrase of the account is saved till the end of the session.');
+    }
+    return props.t('Passphrase of the account will be required to perform any transaction.');
   }
+  return props.t('Your Hardware Wallet will be required to perform any transaction.');
 };
 
 const getClassTooltip = (props) => {

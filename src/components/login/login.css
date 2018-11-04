@@ -27,3 +27,12 @@
   border-bottom: none;
   display: block !important;
 }
+
+.tabcontent > section {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.whitetext {
+  color: white !important;
+}

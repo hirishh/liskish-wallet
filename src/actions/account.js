@@ -1,7 +1,7 @@
 import i18next from 'i18next';
 import actionTypes from '../constants/actions';
 import { setSecondPassphrase, send } from '../utils/api/account';
-import { sendWithLedger, registerDelegateWithLedger, setSecondPassphraseWithLedger } from '../utils/api/ledger';
+import { sendWithHW, registerDelegateWithHW, setSecondPassphraseWithHW } from '../utils/api/hwWallet';
 import { registerDelegate } from '../utils/api/delegate';
 import { transactionAdded } from './transactions';
 import { errorAlertDialogDisplayed } from './dialog';
@@ -61,29 +61,18 @@ export const secondPassphraseRegistered = ({ activePeer, secondPassphrase, accou
     let error;
     let callReslut;
 
-    switch (account.loginType) {
-      case loginTypes.passphrase:
-        [error, callReslut] = await to(setSecondPassphrase(activePeer, secondPassphrase,
-          account.publicKey, account.passphrase));
-        break;
-
-      case loginTypes.ledgerNano:
-        [error, callReslut] =
-          await to(setSecondPassphraseWithLedger(activePeer, account, secondPassphrase));
-        break;
-
-      case loginTypes.trezor:
-        dispatch(errorAlertDialogDisplayed({ text: i18next.t('Not Yet Implemented. Sorry.') }));
-        break;
-
-      default:
-        dispatch(errorAlertDialogDisplayed({ text: i18next.t('Login Type not recognized.') }));
+    if (account.loginType === loginTypes.passphrase) {
+      [error, callReslut] = await to(setSecondPassphrase(activePeer, secondPassphrase,
+        account.publicKey, account.passphrase));
+    } else {
+      [error, callReslut] =
+        await to(setSecondPassphraseWithHW(activePeer, account, secondPassphrase));
     }
 
     loadingFinished('secondPassphraseRegistered');
 
     if (error) {
-      const text = error && error.message ? `${error.message}.` : i18next.t('An error occurred while creating the transaction.');
+      const text = error && error.message ? `${error.message}` : i18next.t('An error occurred while creating the transaction.');
       dispatch(errorAlertDialogDisplayed({ text }));
     } else {
       dispatch(transactionAdded({
@@ -109,30 +98,18 @@ export const delegateRegistered = ({
     let error;
     let callReslut;
 
-    switch (account.loginType) {
-      case loginTypes.passphrase:
-        [error, callReslut] =
-          await to(registerDelegate(activePeer, username, passphrase, secondPassphrase));
-        break;
-
-      // eslint-disable-next-line no-case-declarations
-      case loginTypes.ledgerNano:
-        [error, callReslut] =
-          await to(registerDelegateWithLedger(activePeer, account, username, secondPassphrase));
-        break;
-
-      case loginTypes.trezor:
-        dispatch(errorAlertDialogDisplayed({ text: i18next.t('Not Yet Implemented. Sorry.') }));
-        break;
-
-      default:
-        dispatch(errorAlertDialogDisplayed({ text: i18next.t('Login Type not recognized.') }));
+    if (account.loginType === loginTypes.passphrase) {
+      [error, callReslut] =
+        await to(registerDelegate(activePeer, username, passphrase, secondPassphrase));
+    } else {
+      [error, callReslut] =
+        await to(registerDelegateWithHW(activePeer, account, username, secondPassphrase));
     }
 
     loadingFinished('delegateRegistered');
 
     if (error) {
-      const text = error && error.message ? `${error.message}.` : i18next.t('An error occurred while creating the transaction.');
+      const text = error && error.message ? `${error.message}` : i18next.t('An error occurred while creating the transaction.');
       dispatch(errorAlertDialogDisplayed({ text }));
     } else {
       dispatch(transactionAdded({
@@ -159,29 +136,18 @@ export const sent = ({ activePeer, account, recipientId,
     let error;
     let callReslut;
 
-    switch (account.loginType) {
-      case loginTypes.passphrase:
-        [error, callReslut] = await to(send(activePeer, recipientId, toRawLsk(amount),
-          passphrase, secondPassphrase, data));
-        break;
-
-      case loginTypes.ledgerNano:
-        [error, callReslut] = await to(sendWithLedger(activePeer, account, recipientId,
-          toRawLsk(amount), secondPassphrase, data));
-        break;
-
-      case loginTypes.trezor:
-        dispatch(errorAlertDialogDisplayed({ text: i18next.t('Not Yet Implemented. Sorry.') }));
-        break;
-
-      default:
-        dispatch(errorAlertDialogDisplayed({ text: i18next.t('Login Type not recognized.') }));
+    if (account.loginType === loginTypes.passphrase) {
+      [error, callReslut] = await to(send(activePeer, recipientId, toRawLsk(amount),
+        passphrase, secondPassphrase, data));
+    } else {
+      [error, callReslut] = await to(sendWithHW(activePeer, account, recipientId,
+        toRawLsk(amount), secondPassphrase, data));
     }
 
     loadingFinished('sent');
 
     if (error) {
-      const text = error && error.message ? `${error.message}.` : i18next.t('An error occurred while creating the transaction.');
+      const text = error && error.message ? `${error.message}` : i18next.t('An error occurred while creating the transaction.');
       dispatch(errorAlertDialogDisplayed({ text }));
     } else {
       dispatch(transactionAdded({

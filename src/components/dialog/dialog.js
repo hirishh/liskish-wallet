@@ -47,8 +47,10 @@ class DialogElement extends Component {
   open(config, dialog) {
     clearTimeout(this.timeout);
     this.setState({ hidden: false });
+    const withXButton = dialog.withXButton || true;
     this.props.dialogDisplayed({
       title: dialog.title,
+      withXButton,
       childComponent: dialog.component,
       childComponentProps: parseSearchParams(this.props.history.location.search),
     });
@@ -67,6 +69,7 @@ class DialogElement extends Component {
   }
 
   render() {
+    const withXButton = this.props.dialog.withXButton === 'undefined' || this.props.dialog.withXButton === true;
     return (
       <Dialog active={this.props.dialog.childComponent !== undefined && !this.state.hidden}
         theme={styles}
@@ -74,15 +77,19 @@ class DialogElement extends Component {
         <div className={styles.dialog}>
           <AppBar title={this.props.dialog.title} flat={true}
             className={styles[this.props.dialog.type]}>
-            <Navigation type='horizontal'>
-              <IconButton className={`${styles['x-button']} x-button`} onClick={this.goBack.bind(this)} icon='close'/>
-            </Navigation>
+            {
+              withXButton &&
+              <Navigation type='horizontal'>
+                <IconButton className={`${styles['x-button']} x-button`} onClick={this.goBack.bind(this)} icon='close'/>
+              </Navigation>
+            }
           </AppBar>
           <div className={`modal-dialog-body ${styles.innerBody}`}>
             {this.props.dialog.childComponent ?
               <this.props.dialog.childComponent
                 {...(this.props.dialog.childComponentProps || {})}
                 closeDialog={this.goBack.bind(this)}
+                close={this.close.bind(this)}
               /> :
               null
             }

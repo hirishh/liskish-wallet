@@ -1,3 +1,4 @@
+import { shell } from 'electron'; // eslint-disable-line import/no-extraneous-dependencies
 import localeHandler from './localeHandler';
 import menu from './../menu';
 
@@ -72,6 +73,20 @@ const win = {
     });
 
     win.browser.on('closed', () => { win.browser = null; });
+
+    win.browser.webContents.on('new-window', (event, urlStr) => {
+      // Kill all new window requests by default
+      event.preventDefault();
+
+      // Only allow HTTPS urls to actually be opened
+      const url = new URL(urlStr);
+      if (url.protocol === 'https:') {
+        shell.openExternal(urlStr);
+      } else {
+        // eslint-disable-next-line no-console
+        console.warn(`Blocked request to open new window '${urlStr}', only HTTPS links are allowed`);
+      }
+    });
   },
 
   send: ({ event, value }) => {
