@@ -10,8 +10,13 @@ const roundTo = (value, places) => {
   return Math.round(value * x) / x;
 };
 
-const LiskAmount = props => (<FormattedNumber val={
-  roundTo(parseFloat(fromRawLsk(props.val)), props.roundTo)} />);
+const LiskAmount = (props) => {
+  console.info('props.val', props.val);
+  console.info('fromRawLsk(props.val))', fromRawLsk(props.val));
+  console.info('roundTo(parseFloat(fromRawLsk(props.val)), props.roundTo)', roundTo(parseFloat(fromRawLsk(props.val)), props.roundTo));
+  return <FormattedNumber val={
+    roundTo(parseFloat(fromRawLsk(props.val)), props.roundTo)} />;
+};
 
 export default LiskAmount;
 
