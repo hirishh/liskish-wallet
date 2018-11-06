@@ -2,14 +2,11 @@ import TransportU2F from '@ledgerhq/hw-transport-u2f';
 import TrezorConnect from 'trezor-connect';
 import i18next from 'i18next';
 import { LedgerAccount, SupportedCoin, DposLedger } from 'dpos-ledger-api';
-import { HW_COMMANDS, calculateSecondPassphraseIndex } from '../constants/hwConstants';
+import { HW_CMD, calculateSecondPassphraseIndex } from '../constants/hwConstants';
 import { loadingStarted, loadingFinished } from './loading';
 import { infoToastDisplayed, errorToastDisplayed } from '../actions/toaster';
-import { dialogDisplayed } from '../actions/dialog';
 import { calculateTxId, getBufferToHex } from './rawTransactionWrapper';
 import { PLATFORM_TYPES, getPlatformType } from './platform';
-import HwTrezorPinDialog from '../components/hwTrezorPin';
-import HwTrezorPassphraseDialog from '../components/hwTrezorPassphrase';
 import store from '../store';
 import loginTypes from '../constants/loginTypes';
 
@@ -66,28 +63,6 @@ if (ipc) { // On browser-mode is undefined
   ipc.on('trezorButtonCallback', (event, data) => {
     store.dispatch(infoToastDisplayed({
       label: util.format(HW_MSG.TREZOR_ASK_FOR_CONFIRMATION, data),
-    }));
-  });
-
-  ipc.on('trezorPassphraseCallback', () => {
-    store.dispatch(dialogDisplayed({
-      title: i18next.t('Insert your Trezor Passphrase'),
-      withXButton: false,
-      childComponent: HwTrezorPassphraseDialog,
-      childComponentProps: {
-        callback: passphrase => ipc.send('trezorPassphraseCallbackResponse', passphrase),
-      },
-    }));
-  });
-
-  ipc.on('trezorPinCallback', () => {
-    store.dispatch(dialogDisplayed({
-      title: i18next.t('Insert your Trezor One PIN'),
-      withXButton: false,
-      childComponent: HwTrezorPinDialog,
-      childComponentProps: {
-        callback: pin => ipc.send('trezorPinCallbackResponse', pin),
-      },
     }));
   });
 
@@ -150,20 +125,20 @@ const executeLedgerCommandForWeb = async (command) => {
     const liskLedger = new DposLedger(transport);
     const ledgerAccount = getLedgerAccount(command.data.index);
 
-    let commandResult;
-    if (command.action === HW_COMMANDS.GET_ACCOUNT) {
-      commandResult = await liskLedger.getPubKey(ledgerAccount);
+    let cmdRes;
+    if (command.action === HW_CMD.GET_PUBLICKEY || command.action === HW_CMD.GET_ADDRESS) {
+      cmdRes = await liskLedger.getPubKey(ledgerAccount, command.data.showOnDevice);
     }
-    if (command.action === HW_COMMANDS.SIGN_MSG) {
+    if (command.action === HW_CMD.SIGN_MSG) {
       const signature = await liskLedger.signMSG(ledgerAccount, command.data.message);
-      commandResult = getBufferToHex(signature.slice(0, 64));
+      cmdRes = getBufferToHex(signature.slice(0, 64));
     }
-    if (command.action === HW_COMMANDS.SIGN_TX) {
+    if (command.action === HW_CMD.SIGN_TX) {
       const signature = await liskLedger.signTX(ledgerAccount, command.data.tx, false);
-      commandResult = getBufferToHex(signature);
+      cmdRes = getBufferToHex(signature);
     }
     transport.close();
-    return commandResult;
+    return cmdRes;
   } catch (err) {
     if (err.statusText && err.statusText === 'CONDITIONS_OF_USE_NOT_SATISFIED') {
       throw new Error(HW_MSG.LEDGER_ACTION_DENIED_BY_USER);
@@ -173,28 +148,40 @@ const executeLedgerCommandForWeb = async (command) => {
   }
 };
 
+const throwIfNotSuccess = (cmdRes) => {
+  if (!cmdRes.success) {
+    throw new Error(HW_MSG.TREZOR_ACTION_DENIED_BY_USER);
+  }
+  return cmdRes;
+};
+
 const executeTrezorCommandForWeb = async (command) => {
   try {
     const params = {
       path: getFullDerivationPath(command.data.index),
     };
-    let commandResult;
-    if (command.action === HW_COMMANDS.GET_ACCOUNT) {
-      commandResult = await TrezorConnect.liskGetPublicKey(params);
+    let cmdRes;
+    if (command.action === HW_CMD.GET_PUBLICKEY) {
+      params.showOnTrezor = command.data.showOnDevice;
+      cmdRes = await TrezorConnect.liskGetPublicKey(params);
+      cmdRes = throwIfNotSuccess(cmdRes).payload.publicKey;
     }
-    if (command.action === HW_COMMANDS.SIGN_MSG) {
+    if (command.action === HW_CMD.GET_ADDRESS) {
+      params.showOnTrezor = command.data.showOnDevice;
+      cmdRes = await TrezorConnect.liskGetAddress(params);
+      cmdRes = throwIfNotSuccess(cmdRes).payload.address;
+    }
+    if (command.action === HW_CMD.SIGN_MSG) {
       params.message = command.data.message;
-      commandResult = await TrezorConnect.liskSignMessage(params);
+      cmdRes = await TrezorConnect.liskSignMessage(params);
+      cmdRes = throwIfNotSuccess(cmdRes).payload.signature;
     }
-    if (command.action === HW_COMMANDS.SIGN_TX) {
+    if (command.action === HW_CMD.SIGN_TX) {
       params.transaction = command.data.tx;
-      commandResult = await TrezorConnect.liskSignTransaction(params);
+      cmdRes = await TrezorConnect.liskSignTransaction(params);
+      cmdRes = throwIfNotSuccess(cmdRes).payload.signature;
     }
-    if (!commandResult.success) {
-      throw new Error(HW_MSG.TREZOR_ACTION_DENIED_BY_USER);
-    }
-    return command.action === HW_COMMANDS.GET_ACCOUNT ?
-      commandResult.payload : commandResult.payload.signature;
+    return cmdRes;
   } catch (err) {
     if (err.statusText && err.statusText === 'CONDITIONS_OF_USE_NOT_SATISFIED') {
       throw new Error(HW_MSG.TREZOR_ACTION_DENIED_BY_USER);
@@ -233,18 +220,27 @@ export const getLoginTypeFromDevice = (device) => {
   return null;
 };
 
-export const getHWAccountFromIndex = async (deviceId, loginType, index = 0) => {
+export const getHWPublicKeyFromIndex = async (deviceId, loginType, index, showOnDevice = false) => {
   const command = {
-    action: HW_COMMANDS.GET_ACCOUNT,
+    action: HW_CMD.GET_PUBLICKEY,
     hwType: loginType,
-    data: { deviceId, index },
+    data: { deviceId, index, showOnDevice },
+  };
+  return platformHendler(command);
+};
+
+export const getHWAddressFromIndex = async (deviceId, loginType, index, showOnDevice = false) => {
+  const command = {
+    action: HW_CMD.GET_ADDRESS,
+    hwType: loginType,
+    data: { deviceId, index, showOnDevice },
   };
   return platformHendler(command);
 };
 
 export const signMessageWithHW = async (account, message) => {
   const command = {
-    action: HW_COMMANDS.SIGN_MSG,
+    action: HW_CMD.SIGN_MSG,
     hwType: account.loginType,
     data: {
       deviceId: account.hwInfo.deviceId,
@@ -258,7 +254,7 @@ export const signMessageWithHW = async (account, message) => {
 /* eslint-disable prefer-const */
 export const signTransactionWithHW = async (tx, account, pin) => {
   const command = {
-    action: HW_COMMANDS.SIGN_TX,
+    action: HW_CMD.SIGN_TX,
     hwType: account.loginType,
     data: {
       deviceId: account.hwInfo.deviceId,
@@ -283,7 +279,7 @@ export const signTransactionWithHW = async (tx, account, pin) => {
   // In case of second signature (PIN)
   if (typeof pin === 'string' && pin !== '') {
     const command2 = {
-      action: HW_COMMANDS.SIGN_TX,
+      action: HW_CMD.SIGN_TX,
       hwType: account.loginType,
       data: {
         deviceId: account.hwInfo.deviceId,

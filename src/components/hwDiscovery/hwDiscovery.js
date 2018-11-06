@@ -7,9 +7,8 @@ import { fromRawLsk } from '../../utils/lsk';
 import votingConst from '../../constants/voting';
 import { getHWAccountInfo } from '../../utils/api/hwWallet';
 import { loadingStarted, loadingFinished } from '../../utils/loading';
-
+import { getHWAddressFromIndex } from '../../utils/hwWallet';
 import styles from './hwDiscovery.css';
-
 
 class HwDiscovery extends React.Component {
   constructor() {
@@ -57,6 +56,11 @@ class HwDiscovery extends React.Component {
     });
   }
 
+  hwError(error) {
+    const text = error && error.message ? `${error.message}` : this.props.t('Error during login.');
+    this.props.errorToastDisplayed({ label: text });
+  }
+
   showNextAvailableWallet() {
     if (this.state.showNextAvailable) {
       this.props.infoToastDisplayed({ label: this.props.t('Please use the last not-initialized account before creating a new one!') });
@@ -69,7 +73,24 @@ class HwDiscovery extends React.Component {
     return hwAccount.publicKey === this.props.account.publicKey;
   }
 
-  switchAccount(hwAccount, index) {
+  async verifyAccountAndSwitch(hwAccount, derivationIndex) {
+    this.props.infoToastDisplayed({ label: this.props.t('Verify the address on your device!') });
+    loadingStarted('hwLogin');
+    const deviceId = this.props.account.hwInfo.deviceId;
+    const loginType = this.props.account.loginType;
+    try {
+      // Retrieve Address with verification
+      await getHWAddressFromIndex(deviceId, loginType, derivationIndex, /* showOnDevice */ true);
+    } catch (error) {
+      loadingFinished('hwLogin');
+      this.hwError(error);
+      return;
+    }
+    loadingFinished('hwLogin');
+    this.switchAccount(hwAccount, derivationIndex);
+  }
+
+  switchAccount(hwAccount, derivationIndex) {
     const newAccount = {
       publicKey: hwAccount.publicKey,
       activePeer: this.props.activePeer,
@@ -77,7 +98,7 @@ class HwDiscovery extends React.Component {
       hwInfo: {
         device: this.props.account.hwInfo.device,
         deviceId: this.props.account.hwInfo.deviceId,
-        derivationIndex: index,
+        derivationIndex,
       },
       network: this.props.networkOptions.code,
       address: this.props.networkOptions.address,
@@ -114,7 +135,7 @@ class HwDiscovery extends React.Component {
                       disabled={this.isActive(account)}
                       className='switch-button'
                       inverse={true}
-                      onClick={this.switchAccount.bind(this, account, index)} />
+                      onClick={this.verifyAccountAndSwitch.bind(this, account, index)} />
                   </TableCell>
                   <TableCell>
                     {index}

@@ -5,9 +5,8 @@ import { Dropdown } from 'react-toolbox/lib/dropdown';
 import { Button } from 'react-toolbox/lib/button';
 import { Tabs, Tab } from 'react-toolbox/lib/tabs';
 import i18next from 'i18next';
-import { getHWAccountFromIndex, getLoginTypeFromDevice } from '../../utils/hwWallet';
 import PassphraseInput from '../passphraseInput';
-import HwLogin from './hwLogin';
+import HwDevices from './hwDevices';
 import styles from './login.css';
 import env from '../../constants/env';
 import networks from '../../constants/networks';
@@ -15,8 +14,7 @@ import loginTypes from '../../constants/loginTypes';
 import getNetwork from '../../utils/getNetwork';
 import RelativeLink from '../relativeLink';
 import { validateUrl, getLoginData } from '../../utils/login';
-import { loadingStarted, loadingFinished } from '../../utils/loading';
-import to from '../../utils/to';
+import HwLogin from '../hwLogin';
 
 /**
  * The container component containing login
@@ -67,21 +65,6 @@ class Login extends React.Component {
     if (!this.account) {
       this.autoLogin();
     }
-  }
-
-  onLoginSubmission(passphrase) {
-    const network = Object.assign({}, getNetwork(this.state.network));
-    if (this.state.network === networks.customNode.code) {
-      network.address = this.state.address;
-    }
-
-    // set active peer
-    this.props.activePeerSet({
-      passphrase,
-      loginType: loginTypes.passphrase,
-      network,
-      hwInfo: {},
-    });
   }
 
   getReferrerRoute() {
@@ -163,34 +146,35 @@ class Login extends React.Component {
     }
   }
 
-  async hwLogin(device) {
-    loadingStarted('hwLogin');
-    const loginType = getLoginTypeFromDevice(device);
-    let error;
-    let hwAccount;
-    // eslint-disable-next-line prefer-const
-    [error, hwAccount] = await to(getHWAccountFromIndex(device.deviceId, loginType, 0));
-    if (error) {
-      const text = error && error.message ? `${error.message}` : i18next.t('Error during login.');
-      this.props.errorToastDisplayed({ label: text });
-    } else {
-      const network = Object.assign({}, getNetwork(this.state.network));
-      if (this.state.network === networks.customNode.code) {
-        network.address = this.state.address;
-      }
-      // set active peer
-      this.props.activePeerSet({
-        publicKey: hwAccount.publicKey,
-        loginType,
-        network,
-        hwInfo: {
-          device,
-          deviceId: device.deviceId,
-          derivationIndex: 0,
-        },
-      });
+  getNetworkObj() {
+    const network = Object.assign({}, getNetwork(this.state.network));
+    if (this.state.network === networks.customNode.code) {
+      network.address = this.state.address;
     }
-    loadingFinished('hwLogin');
+    return network;
+  }
+
+  onLoginSubmission(passphrase) {
+    // set active peer
+    this.props.activePeerSet({
+      passphrase,
+      loginType: loginTypes.passphrase,
+      network: this.getNetworkObj(),
+      hwInfo: {},
+    });
+  }
+
+  async hwLogin(device) {
+    this.props.setActiveDialog({
+      title: i18next.t('Hardware Wallet Login'),
+      withXButton: false,
+      childComponent: HwLogin,
+      childComponentProps: {
+        device,
+        network: this.getNetworkObj(),
+        activePeerSet: data => this.props.activePeerSet(data),
+      },
+    });
   }
 
   render() {
@@ -217,7 +201,7 @@ class Login extends React.Component {
     </div>;
 
     const hardwareWalletTab = <div key='hw-device-div' className={ `${grid.row} ${grid['col-sm-12']} ${grid['center-xs']} ${styles.tabcontent}` }>
-      <HwLogin t={this.props.t} hwLogin={this.hwLogin.bind(this)}/>
+      <HwDevices t={this.props.t} hwLogin={this.hwLogin.bind(this)}/>
     </div>;
 
     return (
