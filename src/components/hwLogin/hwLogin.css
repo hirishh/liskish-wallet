@@ -1,13 +1,8 @@
-.pinWrapper {
-  text-align: center;
-}
-
-.pinInput {
-  padding: 0 !important;
-}
-
-.divMargin {
-  margin-top: 24px;
+.address {
+  background-color: #555;
+  border-radius: 2px;
+  color: #fff;
+  padding: 16px;
 }
 
 .pinButton {
@@ -27,8 +22,6 @@
 
 .backIcon {
   transform: translateY(50%);
-  line-height: 24px;
-  height: 24px;
   cursor: pointer;
   color: white !important;
 }

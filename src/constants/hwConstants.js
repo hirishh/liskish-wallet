@@ -3,8 +3,9 @@ export const hwConstants = {
   secondPassphraseOffset: 1e5,
 };
 
-export const HW_COMMANDS = {
-  GET_ACCOUNT: 'GET_ACCOUNT',
+export const HW_CMD = {
+  GET_PUBLICKEY: 'GET_PUBLICKEY',
+  GET_ADDRESS: 'GET_ADDRESS',
   SIGN_MSG: 'SIGN_MSG',
   SIGN_TX: 'SIGN_TX',
 };

@@ -119,25 +119,30 @@ export const executeLedgerCommand = (device, command) =>
       try {
         const liskLedger = new DposLedger(transport);
         const ledgerAccount = getLedgerAccount(command.data.index);
-        let commandResult;
+        let res;
 
-        if (command.action === 'GET_ACCOUNT') {
-          commandResult = await liskLedger.getPubKey(ledgerAccount);
+        if (command.action === 'GET_PUBLICKEY') {
+          res = await liskLedger.getPubKey(ledgerAccount, command.data.showOnDevice);
+          res = res.publicKey;
+        }
+        if (command.action === 'GET_ADDRESS') {
+          res = await liskLedger.getPubKey(ledgerAccount, command.data.showOnDevice);
+          res = res.address;
         }
         if (command.action === 'SIGN_MSG') {
           win.send({ event: 'ledgerButtonCallback', value: null });
           const signature = await liskLedger.signMSG(ledgerAccount, command.data.message);
-          commandResult = getBufferToHex(signature.slice(0, 64));
+          res = getBufferToHex(signature.slice(0, 64));
         }
         if (command.action === 'SIGN_TX') {
           win.send({ event: 'ledgerButtonCallback', value: null });
           const signature = await liskLedger.signTX(ledgerAccount,
             getTransactionBytes(command.data.tx), false);
-          commandResult = getBufferToHex(signature);
+          res = getBufferToHex(signature);
         }
         transport.close();
         busy = false;
-        return Promise.resolve(commandResult);
+        return Promise.resolve(res);
       } catch (err) {
         transport.close();
         busy = false;

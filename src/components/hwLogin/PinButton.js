@@ -1,6 +1,6 @@
 import { Button } from 'react-toolbox/lib/button';
 import React from 'react';
-import styles from './hwTrezorPin.css';
+import styles from './hwLogin.css';
 
 const PinButton = ({ onPinClick, dataValue }) =>
   <Button

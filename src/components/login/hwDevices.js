@@ -3,11 +3,11 @@ import { Table, TableHead, TableRow, TableCell } from 'react-toolbox/lib/table';
 import React from 'react';
 import InfoParagraph from '../infoParagraph';
 import { getDeviceList } from '../../utils/hwWallet';
-import styles from './hwLogin.css';
+import styles from './hwDevices.css';
 
 const { ipc } = window;
 
-class HwLogin extends React.Component {
+class HwDevices extends React.Component {
   constructor() {
     super();
     this.state = {
@@ -100,4 +100,4 @@ class HwLogin extends React.Component {
   }
 }
 
-export default HwLogin;
+export default HwDevices;

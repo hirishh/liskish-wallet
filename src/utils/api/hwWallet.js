@@ -7,7 +7,7 @@ import {
 } from '../rawTransactionWrapper';
 import {
   signTransactionWithHW,
-  getHWAccountFromIndex,
+  getHWPublicKeyFromIndex,
 } from '../hwWallet';
 import { calculateSecondPassphraseIndex } from '../../constants/hwConstants';
 import to from '../to';
@@ -87,7 +87,7 @@ export const setSecondPassphraseWithHW = (activePeer, account, pin) =>
     let signedTx;
     let secondAccount;
     [error, secondAccount] =
-      await to(getHWAccountFromIndex(
+      await to(getHWPublicKeyFromIndex(
         account.hwInfo.deviceId,
         account.loginType,
         calculateSecondPassphraseIndex(account.hwInfo.derivationIndex, pin)));
@@ -112,17 +112,17 @@ export const setSecondPassphraseWithHW = (activePeer, account, pin) =>
 
 export const getHWAccountInfo = async (activePeer, deviceId, loginType, accountIndex) => {
   let error;
-  let hwAccount;
-  [error, hwAccount] = await to(getHWAccountFromIndex(deviceId, loginType, accountIndex));
+  let publicKey;
+  [error, publicKey] = await to(getHWPublicKeyFromIndex(deviceId, loginType, accountIndex));
   if (error) {
     throw error;
   }
-  const address = extractAddress(hwAccount.publicKey);
+  const address = extractAddress(publicKey);
   let resAccount = await getAccount(activePeer, address);
 
   const isInitialized = !!resAccount.unconfirmedBalance;
   Object.assign(resAccount, { isInitialized });
-  Object.assign(resAccount, { isInitialized, publicKey: hwAccount.publicKey });
+  Object.assign(resAccount, { isInitialized, publicKey });
 
   // TODO Detach this from main process
   if (isInitialized) {

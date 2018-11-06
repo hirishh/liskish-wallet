@@ -228,15 +228,25 @@ export const executeTrezorCommand = (device, command) => {
   return tDevice.waitForSessionAndRun(async (session) => {
     try {
       let res;
-      if (command.action === 'GET_ACCOUNT') {
+      if (command.action === 'GET_PUBLICKEY') {
         const resTrezor = await session.typedCall(
           'LiskGetPublicKey',
           'LiskPublicKey',
           {
             address_n: getHardenedPath(command.data.index),
-            show_display: false,
+            show_display: command.data.showOnDevice,
           });
-        res = { publicKey: resTrezor.message.public_key };
+        res = resTrezor.message.public_key;
+      }
+      if (command.action === 'GET_ADDRESS') {
+        const resTrezor = await session.typedCall(
+          'LiskGetAddress',
+          'LiskAddress',
+          {
+            address_n: getHardenedPath(command.data.index),
+            show_display: command.data.showOnDevice,
+          });
+        res = resTrezor.message.address;
       }
       if (command.action === 'SIGN_MSG') {
         const resTrezor = await session.typedCall(
