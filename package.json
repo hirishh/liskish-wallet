@@ -43,7 +43,7 @@
     "bitcore-mnemonic": "1.2.5",
     "browser-or-node": "1.0.2",
     "copy-to-clipboard": "3.0.8",
-    "dpos-ledger-api": "1.1.0",
+    "dpos-ledger-api": "2.0.0",
     "electron-localshortcut": "^2.0.2",
     "flexboxgrid": "=6.3.1",
     "history": "=4.7.2",
