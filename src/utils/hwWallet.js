@@ -5,7 +5,7 @@ import { LedgerAccount, SupportedCoin, DposLedger } from 'dpos-ledger-api';
 import { HW_CMD, calculateSecondPassphraseIndex } from '../constants/hwConstants';
 import { loadingStarted, loadingFinished } from './loading';
 import { infoToastDisplayed, errorToastDisplayed } from '../actions/toaster';
-import { calculateTxId, getBufferToHex } from './rawTransactionWrapper';
+import { getTransactionBytes, calculateTxId, getBufferToHex } from './rawTransactionWrapper';
 import { PLATFORM_TYPES, getPlatformType } from './platform';
 import store from '../store';
 import loginTypes from '../constants/loginTypes';
@@ -124,17 +124,22 @@ const executeLedgerCommandForWeb = async (command) => {
   try {
     const liskLedger = new DposLedger(transport);
     const ledgerAccount = getLedgerAccount(command.data.index);
-
     let cmdRes;
-    if (command.action === HW_CMD.GET_PUBLICKEY || command.action === HW_CMD.GET_ADDRESS) {
+    if (command.action === HW_CMD.GET_PUBLICKEY) {
       cmdRes = await liskLedger.getPubKey(ledgerAccount, command.data.showOnDevice);
+      cmdRes = cmdRes.publicKey;
+    }
+    if (command.action === HW_CMD.GET_ADDRESS) {
+      cmdRes = await liskLedger.getPubKey(ledgerAccount, command.data.showOnDevice);
+      cmdRes = cmdRes.address;
     }
     if (command.action === HW_CMD.SIGN_MSG) {
       const signature = await liskLedger.signMSG(ledgerAccount, command.data.message);
       cmdRes = getBufferToHex(signature.slice(0, 64));
     }
     if (command.action === HW_CMD.SIGN_TX) {
-      const signature = await liskLedger.signTX(ledgerAccount, command.data.tx, false);
+      const signature = await liskLedger.signTX(ledgerAccount,
+        getTransactionBytes(command.data.tx), false);
       cmdRes = getBufferToHex(signature);
     }
     transport.close();
