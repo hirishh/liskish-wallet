@@ -135,10 +135,6 @@ const menu = {
             label: i18n.t('Check your GDT Membership'),
             click: menu.onClickLink.bind(null, electron, 'https://check.liskgdt.net/'),
           },
-          {
-            label: i18n.t('Vote for me and ask a fee refund!'),
-            click: menu.onClickLink.bind(null, electron, 'https://refund.liskgdt.net/'),
-          },
         ],
       },
       {
