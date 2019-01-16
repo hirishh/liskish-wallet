@@ -8,7 +8,10 @@ import transactionTypes from '../constants/transactionTypes';
 
 const bufferOffsetTimestamp = 10;
 
-const createAsset = data => ((data && data.length > 0) ? { data } : {});
+const createSendAsset = data => ((data && data.length > 0) ? { data } : {});
+
+// eslint-disable-next-line max-len
+export const getTransactionBytes = transaction => Lisk.transaction.utils.getTransactionBytes(transaction);
 
 export const createSendTX = (senderPublicKey, recipientId, amount, data = null) => {
   const transaction = {
@@ -18,7 +21,7 @@ export const createSendTX = (senderPublicKey, recipientId, amount, data = null) 
     senderPublicKey,
     recipientId,
     timestamp: Lisk.transaction.utils.getTimeFromBlockchainEpoch() - bufferOffsetTimestamp,
-    asset: createAsset(data),
+    asset: createSendAsset(data),
   };
   return transaction;
 };
@@ -57,7 +60,7 @@ export const createSecondPassphraseTX = (senderPublicKey, secondPublicKey) => {
   return transaction;
 };
 
-export const concatVoteLists =
+const concatVoteLists =
   (voteList, unvoteList) =>
     voteList.map(delegate => `+${delegate}`).concat(unvoteList.map(delegate => `-${delegate}`));
 
