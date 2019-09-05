@@ -36,7 +36,7 @@ class HwDiscovery extends React.Component {
         accountInfo = await getHWAccountInfo(this.props.activePeer, deviceId, loginType, index);
       } catch (error) {
         loadingFinished('hwDiscovery');
-        const text = error && error.message ? `${error.message}.` : this.props.t('Error while retrievieng addresses information.');
+        const text = error && error.message ? `${error.message}.` : this.props.t('Error while retrieving addresses information.');
         this.props.errorToastDisplayed({ label: text });
         this.props.closeDialog();
         return;
@@ -126,8 +126,8 @@ class HwDiscovery extends React.Component {
             </TableHead>
             {
               this.state.hwAccounts.map((account, index) => (
-                (account.unconfirmedBalance ||
-                  (!account.unconfirmedBalance && this.state.showNextAvailable)) &&
+                (account.balance ||
+                  (!account.balance && this.state.showNextAvailable)) &&
                 <TableRow key={index}
                   className={`${styles.row} ${(this.isActive(account) ? styles.isActive : null)}`}>
                   <TableCell className={styles.iconCell} >

@@ -120,8 +120,7 @@ export const getHWAccountInfo = async (activePeer, deviceId, loginType, accountI
   const address = extractAddress(publicKey);
   let resAccount = await getAccount(activePeer, address);
 
-  const isInitialized = !!resAccount.unconfirmedBalance;
-  Object.assign(resAccount, { isInitialized });
+  const isInitialized = !!resAccount.balance;
   Object.assign(resAccount, { isInitialized, publicKey });
 
   // TODO Detach this from main process
