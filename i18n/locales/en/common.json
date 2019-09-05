@@ -55,7 +55,7 @@
   "Error during login.": "Error during login.",
   "Error on Ledger Connection. Be sure your device is connected properly": "Error on Ledger Connection. Be sure your device is connected properly",
   "Error or Device Not Connected.": "Error or Device Not Connected.",
-  "Error while retrievieng addresses information.": "Error while retrievieng addresses information.",
+  "Error while retrieving addresses information.": "Error while retrieving addresses information.",
   "Failed to connect to node {{address}}": "Failed to connect to node {{address}}",
   "Failed to connect: Node {{address}} is not active": "Failed to connect: Node {{address}} is not active",
   "Fee": "Fee",
