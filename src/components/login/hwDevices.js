@@ -62,7 +62,7 @@ class HwDevices extends React.Component {
               (!this.state.isLoading && this.state.hwDevices.length === 0) &&
                 <TableRow key='hw-nodevices'>
                   <TableCell colSpan='3' className={styles.iconCellLoading}>
-                    {this.props.t('No Hadware Wallet detected...')}
+                    {this.props.t('No Hardware Wallet detected...')}
                   </TableCell>
                 </TableRow>
             }
