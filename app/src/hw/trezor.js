@@ -26,6 +26,7 @@ const createTrezorHWDevice = deviceFeatures =>
   new HWDevice(
     deviceFeatures.device_id,
     deviceFeatures.label,
+    'trezor',
     (deviceFeatures.model === '1' ? 'Trezor One' : 'Trezor Model T'),
     null,
   );
@@ -72,7 +73,8 @@ const passphraseCallback = (deviceId, callback) => {
   logDebug('passphraseCallback:', deviceId);
   // We check if we have saved it (Trezor One only)
   const td = getDeviceById(deviceId);
-  if (td && td.pp) {
+  logDebug('passphraseCallback:', td);
+  if (td && (td.pp || td.pp === '')) {
     callback(null, td.pp);
     return;
   }
@@ -84,7 +86,7 @@ const passphraseCallback = (deviceId, callback) => {
       callback(null, passphrase);
       // Save passphrase in case of Trezor One (it asks on every action. Pretty annoying)
       const trezorDevice = getDeviceById(deviceId);
-      if (trezorDevice && trezorDevice.model === 'Trezor One') {
+      if (trezorDevice && trezorDevice.displayModel === 'Trezor One') {
         trezorDevice.pp = passphrase;
         removeConnectedDeviceByID(deviceId);
         addConnectedDevices(trezorDevice);

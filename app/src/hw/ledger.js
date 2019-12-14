@@ -1,11 +1,14 @@
 import { app } from 'electron'; // eslint-disable-line import/no-extraneous-dependencies
 import TransportNodeHid from '@ledgerhq/hw-transport-node-hid'; // eslint-disable-line import/no-extraneous-dependencies
 import { LedgerAccount, SupportedCoin, DposLedger } from 'dpos-ledger-api'; // eslint-disable-line import/no-extraneous-dependencies
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { listen as listenLedgerLogs } from '@ledgerhq/logs';
 import {
   HWDevice,
   addConnectedDevices,
   removeConnectedDeviceByPath,
-  getDeviceByPath } from './hwManager';
+  getDeviceByPath,
+} from './hwManager';
 import {
   isValidAddress,
   getBufferToHex,
@@ -21,20 +24,14 @@ const logDebug = (...args) => {
   }
 };
 
-TransportNodeHid.setListenDevicesDebounce(200);
-
 if (debug) {
-  TransportNodeHid.setListenDevicesDebug((msg, ...args) => {
-    logDebug(msg);
-    logDebug({
-      type: 'listenDevices',
-      args,
-    });
-  });
+  // eslint-disable-next-line no-console
+  listenLedgerLogs(({ id, date, ...log }) => console.log(log));
 }
 
 let busy = false;
 TransportNodeHid.setListenDevicesPollingSkip(() => busy);
+TransportNodeHid.setListenDevicesDebounce(200);
 
 const getLedgerAccount = (index = 0) => {
   const ledgerAccount = new LedgerAccount();
@@ -53,16 +50,18 @@ const getLiskAccount = async (path) => {
     transport.close();
     return liskAccount;
   } catch (e) {
+    logDebug('getLiskAccount catch', e);
     if (transport) transport.close();
     return null;
   }
 };
 
-const createLedgerHWDevice = (liskAccount, path) =>
+const createLedgerHWDevice = (liskAccount, path, product) =>
   new HWDevice(
     liskAccount.publicKey.substring(0, 10),
     null,
-    'Ledger Nano S',
+    'ledger',
+    `Ledger ${product}`,
     path,
   );
 
@@ -74,18 +73,20 @@ const isInsideLedgerApp = async (path) => {
 
 const ledgerObserver = {
   next: async ({ device, type }) => {
+    logDebug('Observer next: ', device, type);
     if (device) {
       if (type === 'add') {
-        if (process.platform === 'darwin' || await isInsideLedgerApp(device.path)) {
+        if (await isInsideLedgerApp(device.path)) {
           const liskAccount = await getLiskAccount(device.path);
-          const ledgerDevice = createLedgerHWDevice(liskAccount, device.path);
+          const ledgerDevice = createLedgerHWDevice(liskAccount, device.path, device.product);
           addConnectedDevices(ledgerDevice);
-          win.send({ event: 'ledgerConnected', value: null });
+          win.send({ event: 'ledgerConnected', value: ledgerDevice });
         }
       } else if (type === 'remove') {
-        if (getDeviceByPath(device.path)) {
+        const ledgerDevice = getDeviceByPath(device.path);
+        if (ledgerDevice) {
           removeConnectedDeviceByPath(device.path);
-          win.send({ event: 'ledgerDisconnected', value: null });
+          win.send({ event: 'ledgerDisconnected', value: ledgerDevice });
         }
       }
     }
