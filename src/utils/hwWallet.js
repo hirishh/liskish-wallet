@@ -16,8 +16,8 @@ export const HW_MSG = {
   ERROR_OR_DEVICE_IS_NOT_CONNECTED: i18next.t('Error or Device Not Connected.'),
   NO_TRANSPORT_AVAILABLE: i18next.t('Unable to detect the communication layer with your Hardware Wallet'),
 
-  LEDGER_CONNECTED: i18next.t('Ledger Nano S Connected.'),
-  LEDGER_DISCONNECTED: i18next.t('Ledger Nano S Disconnected.'),
+  LEDGER_CONNECTED: i18next.t('%s Connected.'),
+  LEDGER_DISCONNECTED: i18next.t('%s Disconnected.'),
   LEDGER_NO_TRANSPORT_AVAILABLE_U2F: i18next.t('Unable to detect the communication layer. Is ledger connected? Is Fido U2F Extension Installed?'),
   LEDGER_ERR_DURING_CONNECTION: i18next.t('Error on Ledger Connection. Be sure your device is connected properly'),
   LEDGER_ACTION_DENIED_BY_USER: i18next.t('Action Denied by User'),
@@ -36,12 +36,16 @@ export const HW_MSG = {
 const { ipc } = window;
 
 if (ipc) { // On browser-mode is undefined
-  ipc.on('ledgerConnected', () => {
-    store.dispatch(infoToastDisplayed({ label: HW_MSG.LEDGER_CONNECTED }));
+  ipc.on('ledgerConnected', (event, data) => {
+    store.dispatch(infoToastDisplayed({
+      label: util.format(HW_MSG.LEDGER_CONNECTED, data.displayModel),
+    }));
   });
 
-  ipc.on('ledgerDisconnected', () => {
-    store.dispatch(errorToastDisplayed({ label: HW_MSG.LEDGER_DISCONNECTED }));
+  ipc.on('ledgerDisconnected', (event, data) => {
+    store.dispatch(errorToastDisplayed({
+      label: util.format(HW_MSG.LEDGER_DISCONNECTED, data.displayModel),
+    }));
   });
 
   ipc.on('ledgerButtonCallback', () => {
@@ -50,13 +54,13 @@ if (ipc) { // On browser-mode is undefined
 
   ipc.on('trezorConnected', (event, data) => {
     store.dispatch(infoToastDisplayed({
-      label: util.format(HW_MSG.TREZOR_CONNECTED, data.model, data.label),
+      label: util.format(HW_MSG.TREZOR_CONNECTED, data.displayModel, data.label),
     }));
   });
 
   ipc.on('trezorDisconnected', (event, data) => {
     store.dispatch(errorToastDisplayed({
-      label: util.format(HW_MSG.TREZOR_DISCONNECTED, data.model, data.label),
+      label: util.format(HW_MSG.TREZOR_DISCONNECTED, data.displayModel, data.label),
     }));
   });
 
@@ -104,9 +108,9 @@ export const getDeviceList = () =>
     } else {
       // Browser mode, only dev purpose
       const deviceList = [];
-      deviceList.push({ deviceId: 0, label: 'FakeLedger', model: 'Ledger Nano S', path: '/fake/path' });
-      deviceList.push({ deviceId: 1, label: 'FakeTrezorT', model: 'Trezor Model T', path: null });
-      deviceList.push({ deviceId: 2, label: 'FakeTrezor1', model: 'Trezor One', path: null });
+      deviceList.push({ deviceId: 0, label: 'FakeLedger', model: 'ledger', displayModel: 'Ledger Nano S', path: '/fake/path' });
+      deviceList.push({ deviceId: 1, label: 'FakeTrezorT', model: 'trezor', displayModel: 'Trezor Model T', path: null });
+      deviceList.push({ deviceId: 2, label: 'FakeTrezor1', model: 'trezor', displayModel: 'Trezor One', path: null });
       resolve(deviceList);
     }
   });
@@ -204,7 +208,7 @@ const platformHendler = async (command) => {
 
   if (platform === PLATFORM_TYPES.BROWSER) { // Used only during dev.
     let resCommand;
-    if (command.hwType === loginTypes.ledgerNano) {
+    if (command.hwType === loginTypes.ledger) {
       resCommand = await executeLedgerCommandForWeb(command);
     } else if (command.hwType === loginTypes.trezor) {
       resCommand = await executeTrezorCommandForWeb(command);
@@ -217,9 +221,9 @@ const platformHendler = async (command) => {
 };
 
 export const getLoginTypeFromDevice = (device) => {
-  if (device.model === 'Ledger Nano S') {
-    return loginTypes.ledgerNano;
-  } else if (device.model === 'Trezor One' || device.model === 'Trezor Model T') {
+  if (device.model === 'ledger') {
+    return loginTypes.ledger;
+  } else if (device.model === 'trezor') {
     return loginTypes.trezor;
   }
   return null;

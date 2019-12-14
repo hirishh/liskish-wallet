@@ -1,7 +1,9 @@
 {
   " Make sure that you are using the latest version of Liskish Wallet.": " Make sure that you are using the latest version of Liskish Wallet.",
   " a fee of {{fee}} LSK.": " a fee of {{fee}} LSK.",
+  "%s Connected.": "%s Connected.",
   "%s Connected. Welcome %s!": "%s Connected. Welcome %s!",
+  "%s Disconnected.": "%s Disconnected.",
   "%s Disconnected. See you %s!": "%s Disconnected. See you %s!",
   "About": "About",
   "Account saved": "Account saved",
@@ -90,8 +92,6 @@
   "Last {{count}} days": "Last {{count}} day",
   "Last {{count}} days_plural": "Last {{count}} days",
   "Later": "Later",
-  "Ledger Nano S Connected.": "Ledger Nano S Connected.",
-  "Ledger Nano S Disconnected.": "Ledger Nano S Disconnected.",
   "Lisk Address": "Lisk Address",
   "Lisk C64": "Lisk C64",
   "Lisk Chat": "Lisk Chat",

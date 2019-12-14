@@ -21,7 +21,7 @@ const getClassTooltip = (props) => {
   switch (props.loginType) {
     case loginTypes.passphrase:
       return props.passphrase && !props.secondPublicKey ? 'lock_open' : 'lock';
-    case loginTypes.ledgerNano:
+    case loginTypes.ledger:
     case loginTypes.trezor:
       return 'dock';
     default:

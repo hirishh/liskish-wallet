@@ -13,10 +13,11 @@ const logDebug = (...args) => {
 };
 
 export class HWDevice {
-  constructor(deviceId, label, model, path) {
+  constructor(deviceId, label, model, displayModel, path) {
     this.deviceId = deviceId;
     this.label = label;
     this.model = model;
+    this.displayModel = displayModel;
     this.path = path; // Used only for Ledger Nano S
     this.pp = null;
   }
@@ -59,7 +60,7 @@ createCommand('hwCommand', (command) => {
   const device = getDeviceById(command.data.deviceId);
   if (device) {
     logDebug('Command Will be executed with device: ', device);
-    if (device.model === 'Ledger Nano S') {
+    if (device.model === 'ledger') {
       return executeLedgerCommand(device, command);
     }
     return executeTrezorCommand(device, command);

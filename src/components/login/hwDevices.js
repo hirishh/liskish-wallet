@@ -85,7 +85,7 @@ class HwDevices extends React.Component {
                       onClick={this.props.hwLogin.bind(this, device)}/>
                   </TableCell>
                   <TableCell className={styles.alignCenter}>
-                    {device.model}
+                    {device.displayModel}
                   </TableCell>
                   <TableCell className={styles.alignCenter}>
                     {device.label ? device.label : device.deviceId}
