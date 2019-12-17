@@ -54,6 +54,8 @@ export const getDeviceById = deviceId =>
 export const getDeviceByPath = path =>
   connectedDevices[connectedDevices.findIndex(x => x.path === path)];
 
+export const getAllConnectedDevicesPath = () => connectedDevices.map(x => x.path);
+
 // eslint-disable-next-line arrow-body-style
 createCommand('hwCommand', (command) => {
   logDebug('Hardware Wallet Command Received: ', command);

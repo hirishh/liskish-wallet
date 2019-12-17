@@ -8,6 +8,7 @@ import {
   addConnectedDevices,
   removeConnectedDeviceByPath,
   getDeviceByPath,
+  getAllConnectedDevicesPath,
 } from './hwManager';
 import {
   isValidAddress,
@@ -32,6 +33,7 @@ if (debug) {
 let busy = false;
 TransportNodeHid.setListenDevicesPollingSkip(() => busy);
 TransportNodeHid.setListenDevicesDebounce(200);
+const isWindows = process.platform === 'win32';
 
 const getLedgerAccount = (index = 0) => {
   const ledgerAccount = new LedgerAccount();
@@ -71,24 +73,37 @@ const isInsideLedgerApp = async (path) => {
   return false;
 };
 
+const disconnectDevice = (path) => {
+  const ledgerDevice = getDeviceByPath(path);
+  if (ledgerDevice) {
+    removeConnectedDeviceByPath(path);
+    win.send({ event: 'ledgerDisconnected', value: ledgerDevice });
+  }
+};
+
+const connectDevice = async (path, product = 'Nano S/X') => {
+  if (await isInsideLedgerApp(path)) {
+    const liskAccount = await getLiskAccount(path);
+    if (liskAccount) {
+      const ledgerDevice = createLedgerHWDevice(liskAccount, path, product);
+      addConnectedDevices(ledgerDevice);
+      win.send({ event: 'ledgerConnected', value: ledgerDevice });
+    }
+  }
+};
+
+let busyFromObserver = false;
 const ledgerObserver = {
   next: async ({ device, type }) => {
     logDebug('Observer next: ', device, type);
     if (device) {
+      busyFromObserver = true;
       if (type === 'add') {
-        if (await isInsideLedgerApp(device.path)) {
-          const liskAccount = await getLiskAccount(device.path);
-          const ledgerDevice = createLedgerHWDevice(liskAccount, device.path, device.product);
-          addConnectedDevices(ledgerDevice);
-          win.send({ event: 'ledgerConnected', value: ledgerDevice });
-        }
+        await connectDevice(device.path, device.product);
       } else if (type === 'remove') {
-        const ledgerDevice = getDeviceByPath(device.path);
-        if (ledgerDevice) {
-          removeConnectedDeviceByPath(device.path);
-          win.send({ event: 'ledgerDisconnected', value: ledgerDevice });
-        }
+        disconnectDevice(device.path);
       }
+      busyFromObserver = false;
     }
   },
 };
@@ -159,3 +174,30 @@ export const executeLedgerCommand = (device, command) =>
       }
       return Promise.reject('LEDGER_ERR_DURING_CONNECTION');
     });
+
+/* *
+  Temporary Windows workaround because of listen() miss-behaviour
+ */
+async function checkDeviceStatus() {
+  if (busyFromObserver) {
+    return;
+  }
+  const connectedPaths = await TransportNodeHid.list();
+  logDebug('connectedPaths', connectedPaths);
+  const registeredPaths = getAllConnectedDevicesPath();
+  logDebug('registeredPaths', registeredPaths);
+
+  // Devices Connected but not Registered/Processed
+  const notRegistered = connectedPaths.filter(x => !registeredPaths.includes(x));
+  logDebug('notRegistered', notRegistered);
+  notRegistered.forEach(path => connectDevice(path));
+
+  // Devices Registered but not Connected anymore
+  const notConnected = registeredPaths.filter(x => !connectedPaths.includes(x));
+  logDebug('notConnected', notConnected);
+  notConnected.forEach(path => disconnectDevice(path));
+}
+
+if (isWindows) {
+  setInterval(checkDeviceStatus, 2000);
+}
