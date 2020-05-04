@@ -55,7 +55,6 @@ class HwLogin extends React.Component {
 
     const loginType = getLoginTypeFromDevice(this.props.device);
     const deviceId = this.props.device.deviceId;
-    loadingFinished('submitPassphrase');
 
     try {
       // Retrieve Address without verification
@@ -170,7 +169,6 @@ class HwLogin extends React.Component {
   }
 
   submitPassphrase() {
-    loadingStarted('submitPassphrase');
     ipc.send('trezorPassphraseCallbackResponse', this.state.trezorPassphrase);
   }
 

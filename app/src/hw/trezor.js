@@ -86,8 +86,8 @@ const passphraseCallback = (deviceId, callback) => {
       callback(null, passphrase);
       // Save passphrase in case of Trezor One (it asks on every action. Pretty annoying)
       const trezorDevice = getDeviceById(deviceId);
+      trezorDevice.pp = passphrase;
       if (trezorDevice && trezorDevice.displayModel === 'Trezor One') {
-        trezorDevice.pp = passphrase;
         removeConnectedDeviceByID(deviceId);
         addConnectedDevices(trezorDevice);
       }
