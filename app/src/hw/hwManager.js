@@ -41,6 +41,7 @@ export const removeConnectedDeviceByID = (deviceId) => {
 };
 
 export const removeConnectedDeviceByPath = (path) => {
+  if(!path) return;
   logDebug('Removing device with path: ', path);
   connectedDevices.some((device, index) =>
     ((connectedDevices[index].path === path) ?

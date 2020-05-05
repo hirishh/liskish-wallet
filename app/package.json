@@ -8,7 +8,7 @@
     "email": "matteo.ferrari@sapiensproject.io"
   },
   "dependencies": {
-    "node-hid": "^1.1.0",
-    "usb": "^1.6.2"
+    "node-hid": "^1.2.0",
+    "usb": "^1.6.3"
   }
 }
