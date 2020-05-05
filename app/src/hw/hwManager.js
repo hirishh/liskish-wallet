@@ -41,7 +41,7 @@ export const removeConnectedDeviceByID = (deviceId) => {
 };
 
 export const removeConnectedDeviceByPath = (path) => {
-  if(!path) return;
+  if (!path) return;
   logDebug('Removing device with path: ', path);
   connectedDevices.some((device, index) =>
     ((connectedDevices[index].path === path) ?
@@ -55,7 +55,12 @@ export const getDeviceById = deviceId =>
 export const getDeviceByPath = path =>
   connectedDevices[connectedDevices.findIndex(x => x.path === path)];
 
-export const getAllConnectedDevicesPath = () => connectedDevices.map(x => x.path);
+export const getAllConnectedDevicesPath = (model) => {
+  if (model) {
+    return connectedDevices.filter(x => x.model === model).map(x => x.path);
+  }
+  return connectedDevices.map(x => x.path);
+};
 
 // eslint-disable-next-line arrow-body-style
 createCommand('hwCommand', (command) => {

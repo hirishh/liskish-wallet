@@ -184,7 +184,7 @@ async function checkDeviceStatus() {
   }
   const connectedPaths = await TransportNodeHid.list();
   logDebug('connectedPaths', connectedPaths);
-  const registeredPaths = getAllConnectedDevicesPath();
+  const registeredPaths = getAllConnectedDevicesPath('ledger');
   logDebug('registeredPaths', registeredPaths);
 
   // Devices Connected but not Registered/Processed
