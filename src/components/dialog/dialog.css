@@ -1,0 +1,65 @@
+.dialog {
+  & .x-button {
+    right: -20px;
+
+    & span {
+      color: rgba(255, 255, 255, 0.87);
+    }
+  }
+
+  & p {
+    color: rgba(255, 255, 255, 0.87);
+    line-height: 1.4em;
+    font-size: 1em;
+  }
+
+  & header {
+    border-radius: 2px 2px 0 0;
+    color: rgba(255, 255, 255, 0.87);
+
+    & h1 {
+      color: rgba(255, 255, 255, 0.87);
+      font-weight: normal;
+    }
+  }
+
+  & hr {
+    border-bottom-width: 0;
+    margin: 16px -24px;
+    border-color: rgba(255, 255, 255, 0.12);
+  }
+}
+
+.body {
+  border-radius: 2px 2px 0 0;
+  padding: 0px;
+  background-color: #4c586f;
+  color: #fff;
+}
+
+.innerBody {
+  padding: 24px;
+  max-height: calc(100vh - 64px); /* stylelint-disable-line */
+  overflow: auto;
+}
+
+@media screen and (min-width: 960px) {
+  .fullscreen {
+    width: 75vw; /* stylelint-disable-line */
+  }
+}
+
+@media screen and (min-width: 600px) {
+  .innerBody {
+    max-height: calc(100vh - 100px); /* stylelint-disable-line */
+  }
+}
+
+.error {
+  background-color: #c62828;
+}
+
+.success {
+  background-color: #7cb342;
+}
+

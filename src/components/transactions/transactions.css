@@ -1,0 +1,53 @@
+:root {
+  --in: #73c8a9;
+  --out: #777;
+  --btn: rgb(2, 136, 209);
+}
+
+.grayButton,
+.inButton,
+.outButton,
+.smallButton {
+  background-color: #555;
+  border-radius: 3px;
+  padding: 6px;
+  text-transform: uppercase;
+  color: #fff;
+  display: block;
+}
+
+.smallButton {
+  display: inline-block;
+}
+
+.inButton {
+  background-color: color(var(--in) alpha(45%)) !important;
+}
+
+.empty {
+  color: #777;
+  text-align: center;
+}
+
+.in {
+  color: var(--in) !important;
+}
+
+.out {
+  color: var(--out) !important;
+}
+
+.centerText {
+  text-align: center;
+}
+
+.ordinaryText {
+  text-decoration: none;
+  color: inherit;
+}
+
+@media screen and (max-width: 48em) {
+  .hiddenXs {
+    display: none;
+  }
+}

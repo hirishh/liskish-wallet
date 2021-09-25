@@ -1,0 +1,25 @@
+.tableWrapper {
+  margin: -24px -24px 24px -24px;
+}
+
+.row {
+  color: #fff;
+
+  &:hover {
+    background-color: #555;
+  }
+}
+
+.iconCell {
+  width: 24px;
+  text-align: right;
+}
+
+.isActive {
+  background-color: #698a93 !important;
+  font-weight: bold;
+}
+
+.hwDeviceInfo {
+  font-weight: normal;
+}

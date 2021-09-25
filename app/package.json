@@ -1,0 +1,14 @@
+{
+  "name": "liskish-wallet",
+  "version": "2.2.1-beta",
+  "description": "Liskish Wallet",
+  "main": "./build/main.js",
+  "author": {
+    "name": "Matteo Ferrari (hirish), Lisk Foundation",
+    "email": "matteo.ferrari@sapiensproject.io"
+  },
+  "dependencies": {
+    "node-hid": "^1.2.0",
+    "usb": "^1.6.3"
+  }
+}

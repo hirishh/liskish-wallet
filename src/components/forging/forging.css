@@ -1,0 +1,30 @@
+@import './circularProgressbar.css';
+
+.delegateName {
+  margin: 0;
+  font-weight: normal;
+}
+
+.row {
+  color: #fff;
+
+  &:hover {
+    background-color: #555;
+  }
+}
+
+.grayCard {
+  background-color: #4c586f;
+  color: #fff !important;
+}
+
+.forgedBlocksTableWrapper {
+  margin: 0 -8px;
+  overflow-x: auto;
+}
+
+.circularProgressTitle {
+  text-align: center;
+  padding-bottom: 16px;
+  width: 100%;
+}

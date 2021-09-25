@@ -1,0 +1,107 @@
+.table {
+  & :global thead th:first-child {
+    display: none !important;
+  }
+}
+
+.searchBox {
+  position: relative;
+}
+
+.searchIcon {
+  position: absolute;
+  top: 15px;
+  right: 10px;
+  color: rgba(255, 255, 255, 0.38);
+}
+
+.field {
+  margin-bottom: 0 !important;
+  color: #fff !important;
+  border-color: #fff !important;
+}
+
+.row {
+  color: #fff;
+
+  &:hover {
+    background-color: #555;
+  }
+}
+
+.upVoteRow {
+  background-color: #2d7631 !important;
+}
+
+.downVoteRow {
+  background-color: #d95600 !important;
+}
+
+.votedRow {
+  background-color: #698a93 !important;
+}
+
+.pendingRow {
+  background-color: #5b7d87 !important;
+}
+
+.actionBar {
+  margin-top: 9px;
+  display: inline-block;
+}
+
+.votesMenuButton {
+  margin-right: 16px;
+  margin-top: 8px;
+  color: #fff;
+
+  & :global span {
+    vertical-align: top;
+    line-height: 24px;
+    margin-left: 6px;
+  }
+}
+
+.voted {
+  color: #7cb342;
+}
+
+.unvoted {
+  color: #f52929;
+}
+
+/* react toolbar overwroght */
+.input {
+  margin-top: -10px;
+}
+
+.menuItem {
+  flex-direction: row-reverse;
+  width: 241px;
+}
+
+.icon {
+  text-align: right;
+  width: auto;
+}
+
+.menuInner {
+  height: 306px;
+  overflow-y: auto;
+}
+
+.button {
+  width: auto;
+  margin-top: 18px;
+  margin-right: 16px;
+}
+
+.rotated {
+  transform: rotate(45deg);
+}
+
+.voteButton {
+  color: #fff !important;
+  position: relative;
+  top: 3px;
+}

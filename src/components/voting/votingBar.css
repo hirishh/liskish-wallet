@@ -1,0 +1,13 @@
+.red {
+  color: #f52929;
+}
+
+.votingBarStyle {
+  color: #fff;
+}
+
+.fixedAtBottom {
+  position: fixed;
+  bottom: 0;
+  left: 8px;
+}

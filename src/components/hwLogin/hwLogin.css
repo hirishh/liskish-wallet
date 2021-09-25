@@ -1,0 +1,27 @@
+.address {
+  background-color: #555;
+  border-radius: 2px;
+  color: #fff;
+  padding: 16px;
+}
+
+.pinButton {
+  width: 80px;
+  height: 80px;
+  margin-top: 8px;
+  margin-left: 5px;
+  font-size: 22px;
+  font-weight: 600;
+  color: white !important;
+  border: 1px solid darkgrey;
+
+  &:first-child {
+    margin-left: 0;
+  }
+}
+
+.backIcon {
+  transform: translateY(50%);
+  cursor: pointer;
+  color: white !important;
+}
